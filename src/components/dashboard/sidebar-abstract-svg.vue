@@ -1,0 +1,145 @@
+<template>
+  <div id="sidebar-abstract">
+    <svg width="224" height="241" viewBox="0 0 224 241" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M133.676 104.32C133.676 111.807 139.86 117.877 147.488 117.877C155.116 117.877 161.301 111.807 161.301 104.32V89"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M109.21 144.048C114.296 144.048 118.418 140.008 118.418 135.024C118.418 130.04 114.296 126 109.21 126C104.124 126 100.002 130.04 100.002 135.024C100.002 140.008 104.124 144.048 109.21 144.048Z"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M128.66 217.944C136.034 217.944 142.012 212.136 142.012 204.972C142.012 197.808 136.034 192 128.66 192C121.286 192 115.308 197.808 115.308 204.972C115.308 212.136 121.286 217.944 128.66 217.944Z"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M41.2072 49.1922C49.2171 49.1922 55.7103 42.8289 55.7103 34.9793C55.7103 27.1298 49.2171 20.7665 41.2072 20.7665C33.1974 20.7665 26.7041 27.1298 26.7041 34.9793C26.7041 42.8289 33.1974 49.1922 41.2072 49.1922Z"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M41.3224 65.8866C59.1855 65.8866 73.6667 51.8975 73.6667 34.6409C73.6667 17.3844 59.1855 3.39526 41.3224 3.39526C23.4593 3.39526 8.97815 17.3844 8.97815 34.6409"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M134.115 175H109.99C102.27 175 95.1267 177.617 89.3066 182.06M109.904 251.253C90.3461 251.253 74.491 234.235 74.491 213.242C74.491 205.953 76.4027 199.142 79.7174 193.357L109.904 251.253Z"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M74.4723 70.3986C67.1617 70.3986 61.2354 76.2063 61.2354 83.3707C61.2354 90.535 67.1617 96.3427 74.4723 96.3427C81.783 96.3427 87.7093 90.535 87.7093 83.3707V70.3986"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M178.574 63.2584C178.574 72.79 186.407 80.5169 196.07 80.5169C205.733 80.5169 213.566 72.79 213.566 63.2584C213.566 53.7269 205.733 46 196.07 46H178.574"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M16.3292 182.685C7.87439 182.685 1.02039 176.04 1.02039 167.843C1.02039 159.645 7.87439 153 16.3292 153C24.7841 153 31.6381 159.645 31.6381 167.843V213.235"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M13.237 105.301C5.92639 105.301 0 111.022 0 118.08C0 125.138 5.92639 130.86 13.237 130.86C20.5476 130.86 26.474 125.138 26.474 118.08V65.8866"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M132.38 135.237C132.38 122.404 121.934 112 109.048 112C96.1619 112 85.7157 122.404 85.7157 135.237C85.7157 148.07 96.1619 158.474 109.048 158.474H170.202"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M60.1995 173.498C52.6346 173.498 46.5021 167.498 46.5021 160.097V121.926C46.5021 114.525 52.6346 108.525 60.1995 108.525C67.7643 108.525 73.8969 114.525 73.8969 121.926V160.097C73.8969 167.498 67.7643 173.498 60.1995 173.498Z"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M195.922 191.569V171.415C195.922 165.663 200.714 161 206.626 161C212.538 161 217.331 165.663 217.331 171.415V211.723C217.331 217.475 212.538 222.138 206.626 222.138C200.714 222.138 195.922 217.475 195.922 211.723V206.853"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M15.3664 203H14.2589C6.38395 203 0 209.262 0 216.987C0 224.712 6.38392 230.974 14.2589 230.974H47.2067C55.0818 230.974 61.4656 224.712 61.4656 216.987C61.4656 209.262 55.0818 203 47.2067 203H46.0992"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M195.504 148.072H184.18C176.576 148.072 170.411 142.012 170.411 134.536C170.411 127.06 176.576 121 184.18 121H206.827C214.431 121 220.596 127.06 220.596 134.536V135.739C220.596 142.55 214.979 148.072 208.05 148.072"
+        stroke="#D8D8ED"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path d="M166.532 66H135.527C115.907 66 100.002 81.6557 100.002 100.968" stroke="#D8D8ED" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M170.815 108.074H193.461C208.67 108.074 221 95.9532 221 81.0019" stroke="#D8D8ED" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M9.09326 50.5458C9.09326 52.6468 9.09326 79.095 9.09326 92.0563" stroke="#D8D8ED" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M170.411 222C170.411 222.708 170.411 231.619 170.411 235.987" stroke="#D8D8ED" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </div>
+</template>
+
+<script lang="ts">
+import { Vue } from 'vue-property-decorator';
+
+export default class AbstractSVG extends Vue {}
+</script>
+
+<style scoped>
+#sidebar-abstract {
+  max-width: 716px;
+  max-height: 518px;
+  position: absolute !important;
+  /* z-index: 8; */
+  bottom: 0;
+  left: 0;
+  z-index: -1 !important;
+}
+/* path { */
+/* stroke: var(--secondary); */
+/* } */
+
+@keyframes changeColor {
+  to {
+    stroke: #f6f6f6;
+  }
+}
+/* stroke="#F6F6F6" */
+</style>
