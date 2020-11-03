@@ -21,12 +21,12 @@
           <v-card class="pl-4 pb-4 contact--card" color="#04A4E4" height="130px" flat>
             <div class="d-flex align-center pt-6">
               <div>
-                <label class="value text-white">30</label>
+                <label class="value text-white">{{ getContactGroups.data.length }}</label>
                 <br />
                 <label class="value--desc text-white"> Groups</label>
               </div>
               <div class="ml-4">
-                <label class="value text-white">1250</label>
+                <label class="value text-white">{{ getContacts.data.length }}</label>
                 <br />
                 <label class="value--desc text-white"> Total</label>
               </div>
@@ -56,7 +56,7 @@
               <img src="@/assets/images/avatar/richie.svg" alt="" />
               <div class="d-flex flex-column ml-3">
                 <span class="no-shadow text-10 text-primary">VIEW PROFILE</span>
-                <span class="text-8">Joined {{ getLoggedInUser.metadata.creationTime }}</span>
+                <span class="text-8">Joined {{ getLoggedInUser ? getLoggedInUser.metadata.creationTime : '' }}</span>
               </div>
             </div>
             <!-- <div class="text-10">
@@ -135,8 +135,10 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { AuthStateType } from '@/store/modules/auth';
+import { UserStateType } from '@/store/modules/user';
 
 const auth = namespace('auth');
+const user = namespace('user');
 
 @Component({
   name: 'DashboardIndex'
@@ -144,6 +146,12 @@ const auth = namespace('auth');
 export default class DashboardIndex extends Vue {
   @auth.Getter
   getLoggedInUser!: AuthStateType['currentUser'];
+
+  @user.Getter
+  getContacts!: UserStateType['contacts'];
+
+  @user.Getter
+  getContactGroups!: UserStateType['contactGroups'];
 
   get firstname(): string {
     return this.getLoggedInUser ? this.getLoggedInUser.displayName.split(' ')[0] : '';

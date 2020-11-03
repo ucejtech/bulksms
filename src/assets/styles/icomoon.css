@@ -26,6 +26,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-edit:before {
+  content: "\e906";
+  color: #fff;
+}
+
+.icon-upload:before {
+  content: "\e900";
+  color: #fff;
+}
+
 .icon-bin:before {
   content: "\e901";
 }

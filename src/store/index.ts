@@ -18,9 +18,12 @@ const store = new Vuex.Store<RootState>({
   }
 });
 
-firebase.auth().onAuthStateChanged((user) => {
+firebase.auth().onAuthStateChanged(user => {
   if (user) {
     store.commit('auth/SET_CURRENT_USER', user);
+    store.dispatch('user/fetchDBProfile', user.uid);
+    store.dispatch('user/fetchContacts', user.uid);
+    store.dispatch('user/fetchContactGroups', user.uid);
   }
 });
 

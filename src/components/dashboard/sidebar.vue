@@ -8,7 +8,7 @@
       <img src="@/assets/images/avatar/user.svg" width="49px" height="49px" />
       <div class="ml-2">
         <div class="display--name">{{ firstname }}</div>
-        <div class="display--contact colored--text">{{ getLoggedInUser.email }}</div>
+        <div class="display--contact colored--text">{{ getLoggedInUser ? getLoggedInUser.email : '' }}</div>
       </div>
     </div>
     <div class="sidebar--navigation pt-7">

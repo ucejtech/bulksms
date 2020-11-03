@@ -30,16 +30,16 @@
     width: 100% !important;
 }
 
+.input,
 input {
     height: 45px !important;
 }
 
-.text--rtl {
-    /* direc */
-}
-
+.input,
+.chip--group,
 input,
 textarea {
+    display: block;
     background: var(--accent) !important;
     border-radius: 5px !important;
     border: none !important;
@@ -157,4 +157,8 @@ input:focus {
 
 .text-bold {
     font-weight: bold !important;
+}
+
+.visibility-hidden {
+    visibility: hidden;
 }

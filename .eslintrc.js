@@ -15,6 +15,10 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'max-len': ['error', { code: 500 }],
+    'arrow-parens': ['error', 'as-needed'],
+    'no-param-reassign': [2, {
+      props: false
+    }],
     'comma-dangle': ['error', 'never']
   }
 };

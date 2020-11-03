@@ -31,7 +31,9 @@
           </div>
         </section>
         <section class="columns mt-xs-16 mt-md-16 pt-3 d-flex justify-center text-center">
-          <component @change-component-id="handleChangeComponent" :is="componentId"></component>
+          <transition name="slide-left" mode="out-in" @enter="enter" @afterEnter="afterEnter">
+            <component @change-component-id="handleChangeComponent" :is="componentId"></component>
+          </transition>
         </section>
       </main>
     </div>
@@ -53,6 +55,8 @@ import appConstants from '../app/constants';
   }
 })
 export default class Home extends Vue {
+  prevHeight = '180px';
+
   animation = animation;
 
   appConstants = appConstants;
@@ -80,6 +84,21 @@ export default class Home extends Vue {
 
   handleChangeComponent(val: string) {
     this.componentId = val;
+  }
+
+  enter(element: HTMLDivElement) {
+    const { height } = getComputedStyle(element);
+
+    element.style.height = this.prevHeight;
+
+    setTimeout(() => {
+      element.style.height = height;
+    });
+  }
+
+  afterEnter(element: HTMLDivElement) {
+    element.style.height = 'auto';
+    this.prevHeight = '0';
   }
 
   changeComponent() {
@@ -142,5 +161,27 @@ export default class Home extends Vue {
 }
 .other--links:hover {
   color: #e45858 !important;
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition-duration: 0.5s;
+  transition-property: height, opacity, transform;
+  transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+  overflow: hidden;
+}
+
+.slide-left-enter,
+.slide-right-leave-active {
+  opacity: 0;
+  transform: translateY(2em);
+}
+
+.slide-left-leave-active,
+.slide-right-enter {
+  opacity: 0;
+  transform: translateY(-2em);
 }
 </style>

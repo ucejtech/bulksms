@@ -52,7 +52,7 @@ export default class Home extends Vue {
   };
 
   get inputState() {
-    return this.passwordState === 'password' ? { icon: 'mdi-eye-outline', type: 'password' } : { icon: 'mdi-eye-off-outline', type: 'text' };
+    return this.passwordState === 'password' ? { icon: 'mdi-eye-off-outline', type: 'password' } : { icon: 'mdi-eye-outline', type: 'text' };
   }
 
   changePasswordState() {
