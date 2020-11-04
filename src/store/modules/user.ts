@@ -140,6 +140,18 @@ export default class UserModule extends VuexModule {
     });
   }
 
+  @Action({ rawError: true })
+  sendBulkSMS(sendMessageModel: { content: string }) {
+    return new Promise((resolve, reject) => {
+      const sendSMS = firebase.functions().httpsCallable('sendSMS');
+      sendSMS(sendMessageModel).then(() => {
+        resolve(this.context.getters.getContacts);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
+
   @Mutation
   SET_USER_PROFILE(userProfile: UserStateType['userProfile']) {
     this.userProfile = userProfile;

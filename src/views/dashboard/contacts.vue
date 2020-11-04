@@ -87,9 +87,20 @@
         </div>
         <chips-group class="mt-9" v-if="model.sendMessage.recipients.length > 0" :chipData="model.sendMessage.recipients.map(x => x.phoneNumber)"></chips-group>
         <v-text-field class="mt-4" placeholder="Title" background-color="#f2f3fc" v-model="model.sendMessage.message.title" hide-details="auto" :required="true" flat solo></v-text-field>
-        <v-textarea solo flat class="mt-4" background-color="#f2f3fc" name="input-7-4" hide-details="auto" placeholder="Type your message here" height="320px"></v-textarea>
+        <v-textarea
+          solo
+          flat
+          class="mt-4"
+          background-color="#f2f3fc"
+          name="input-7-4"
+          :rules="rules.content"
+          v-model="model.sendMessage.message.content"
+          hide-details="auto"
+          placeholder="Type your message here"
+          height="320px"
+        ></v-textarea>
         <div class="full-width d-flex justify-space-between align-center">
-          <v-btn class="mt-6" color="primary" height="46" @click="importContacts" :loading="addContactLoading">Send Message</v-btn>
+          <v-btn class="mt-6" color="primary" height="46" @click="sendMessage" :loading="sendMessageLoading">Send Message</v-btn>
           <v-checkbox v-model="model.sendMessage.saveAsTemplate" label="Save as template" hide-details required></v-checkbox>
         </div>
       </v-card>
@@ -152,12 +163,18 @@ export default class DashboardIndex extends Vue {
     }
   };
 
+  rules = {
+    content: [(v: string) => !!v || 'Message Content is needed']
+  };
+
   checkbox = {
     all: false,
     groups: false
   };
 
   addContactLoading = false;
+
+  sendMessageLoading = false;
 
   importJsonParsed = false;
 
@@ -227,11 +244,29 @@ export default class DashboardIndex extends Vue {
     return true;
   }
 
+  sendMessage() {
+    this.sendMessageLoading = true;
+    this.sendBulkSMS(this.model.sendMessage)
+      .then(() => {
+        this.sendMessageLoading = false;
+        this.$toast.success('Messages Sent', 'Success', 'topRight');
+        this.sendMessageDialog = false;
+      })
+      .catch(() => {
+        this.sendMessageLoading = false;
+        this.$toast.success('Messages not Sent', 'Error', 'topRight');
+      });
+    this.sendMessageLoading = false;
+  }
+
   @user.Action
   private addContacts!: (contacts: Model['contactImport']['importedJson']) => Promise<void>;
 
   @user.Action
   private addGroup!: ({ group, importedJson }: Model['contactImport']) => Promise<void>;
+
+  @user.Action
+  private sendBulkSMS!: (sendMessageModel: object) => Promise<void>;
 }
 </script>
 

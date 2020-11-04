@@ -2,7 +2,7 @@
 node_modules
 /dist
 resources
-
+functions/.runtimeconfig.json
 
 # local env files
 .env.local
