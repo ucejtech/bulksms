@@ -3,6 +3,8 @@ import Multiguard from 'vue-router-multiguard';
 
 import Landing from '../layouts/landing.vue';
 import DashboardIndex from '../views/dashboard/index.vue';
+import Templates from '../views/dashboard/templates.vue';
+import History from '../views/dashboard/history.vue';
 import Contacts from '../views/dashboard/contacts.vue';
 import { isAuthenticationRoute, isAuthenticated } from '../middlewares/index';
 
@@ -37,6 +39,14 @@ const routes: Array<RouteConfig> = [
       {
         path: 'contacts',
         component: Contacts
+      },
+      {
+        path: 'templates',
+        component: Templates
+      },
+      {
+        path: 'History',
+        component: History
       }
     ]
   }

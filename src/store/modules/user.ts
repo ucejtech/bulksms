@@ -6,9 +6,10 @@ import {
 type groupType = {
   name: string;
   contacts: string[];
+  id: string;
 }
 
-interface ImportContact {
+export interface ImportContact {
   name?: string;
   phoneNumber?: string;
   email?: string;
@@ -97,7 +98,7 @@ export default class UserModule extends VuexModule {
     const batch = db.batch();
 
     const contactsGroupsRef = db.collection('groups').doc(id);
-    batch.set(contactsGroupsRef, { name, groupOwner: uid });
+    batch.set(contactsGroupsRef, { name, groupOwner: uid, id });
 
     await importedJson.map(async (contact: ImportContact) => {
       const contactsRef = await db.collection('groups').doc(id).collection('contacts').doc(contact.phoneNumber);

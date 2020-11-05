@@ -5,11 +5,11 @@
         <v-text-field placeholder="Search Contact" background-color="#f2f3fc" hide-details="auto" :required="true" flat append-icon="icon-magnify" solo></v-text-field>
         <div class="contact--display--groups mt-6 pa-4">
           <div class="selections d-flex justify-space-between align-center">
-            <v-checkbox v-model="checkbox.all" :value="getContacts.data.length === model.sendMessage.recipients.length" label="All" hide-details required></v-checkbox>
+            <v-checkbox v-model="checkbox.messageRecipient" value="all" label="All" hide-details required></v-checkbox>
             <span>1250</span>
           </div>
-          <div class="selections d-flex justify-space-between align-center mt-3">
-            <v-checkbox v-model="checkbox.groups" label="Groups" hide-details required></v-checkbox>
+          <div class="selections d-flex justify-space-between align-center mt-3" v-for="(group, index) in getContactGroups.data" :key="index">
+            <v-checkbox v-model="checkbox.messageRecipient" :label="group.name" :value="group.id" hide-details required></v-checkbox>
             <span>30</span>
           </div>
         </div>
@@ -27,7 +27,7 @@
       </v-col>
       <v-col cols="12" md="7">
         <div class="colored--accent--box contact--list d-flex align-center pl-3 mb-4">
-          <v-checkbox v-model="checkbox.all" :value="getContacts.data.length === model.sendMessage.recipients.length" label="#" hide-details required></v-checkbox>
+          <v-checkbox v-model="checkbox.all" :value="checkbox.messageRecipient === 'all'" label="#" hide-details required></v-checkbox>
           <span class="ml-7">Phone Numbers</span>
         </div>
 
@@ -43,7 +43,7 @@
               </v-btn>
               <div>
                 <span> {{ contact.name }}</span>
-                <span class="ml-4"> {{ contact.phoneNumber }}</span>
+                <span class="ml-4">{{ contact.phoneNumber }}</span>
               </div>
             </div>
             <div class="delete">
@@ -109,13 +109,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { AuthStateType } from '@/store/modules/auth';
 import jsonReader from '@/utils/jsonReader';
 import { UserStateType } from '@/store/modules/user';
 import uuid from '@/utils/uuid';
 import ChipsGroup from '../../components/dashboard/chips-groups.vue';
+import FirebaseHelper from '../../services/firebase';
 
 interface Model {
   contactImport: {
@@ -139,12 +140,12 @@ const auth = namespace('auth');
 const user = namespace('user');
 
 @Component({
-  name: 'DashboardIndex',
+  name: 'Contacts',
   components: {
     ChipsGroup
   }
 })
-export default class DashboardIndex extends Vue {
+export default class Contacts extends Vue {
   model: Model = {
     contactImport: {
       group: {
@@ -168,8 +169,7 @@ export default class DashboardIndex extends Vue {
   };
 
   checkbox = {
-    all: false,
-    groups: false
+    messageRecipient: ''
   };
 
   addContactLoading = false;
@@ -187,6 +187,22 @@ export default class DashboardIndex extends Vue {
 
   @user.Getter
   getContacts!: UserStateType['contacts'];
+
+  @user.Getter
+  getContactGroups!: UserStateType['contactGroups'];
+
+  @Watch('checkbox', { deep: true })
+  async onMessageRecipientCheckBox(val: { messageRecipient: string }) {
+    if (val.messageRecipient) {
+      if (val.messageRecipient === 'all') {
+        this.model.sendMessage.recipients = this.getContacts.data;
+      } else {
+        this.model.sendMessage.recipients = await FirebaseHelper.getGroupContacts(val.messageRecipient);
+      }
+    } else {
+      this.model.sendMessage.recipients = [];
+    }
+  }
 
   get firstname(): string {
     if (this.getLoggedInUser && this.getLoggedInUser.name) {
