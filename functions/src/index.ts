@@ -31,11 +31,6 @@ exports.sendSMS = functions.https.onCall(async (data, context) => {
             };
         }
 
-        // const messageObj = JSON.stringify({
-        //     'to': recipients.map((x: { phoneNumber: string }) => x.phoneNumber),
-        //     'body': message.content
-        // })
-
         recipients.forEach((recipient: { phoneNumber: string }) => {
             client.messages.create({
                 to: recipient.phoneNumber,
@@ -55,9 +50,6 @@ exports.sendSMS = functions.https.onCall(async (data, context) => {
         //     functions.config().bulksms.api_auth, 'Basic', messageObj.length
         // ).post(`${functions.config().bulksms.base_url}/messages`, messageObj);
 
-
-        // console.log(messageRequest.data)
-        // return true;
     } catch (error) {
         console.log(error)
         return error.message
