@@ -1,8 +1,8 @@
 import firebase from '@/plugins/firebase';
-import { ImportContact, UserStateType } from '../store/modules/user';
+import { Contact, UserStateType } from '@/store/modules/user';
 
 class FirebaseHelper {
-  static getGroupContacts = async (id: string): Promise<ImportContact[]> => {
+  static getGroupContacts = async (id: string): Promise<Contact[]> => {
     try {
       const results: UserStateType['contacts']['data'] = [];
       const contacts = await firebase.firestore().collection('groups').doc(id).collection('contacts')

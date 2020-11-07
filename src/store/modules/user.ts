@@ -9,10 +9,15 @@ type groupType = {
   id: string;
 }
 
-export interface ImportContact {
+export interface Contact {
   name?: string;
   phoneNumber?: string;
   email?: string;
+}
+
+export interface Message {
+  title?: string;
+  content?: string;
 }
 
 export interface UserStateType {
@@ -31,7 +36,11 @@ export interface UserStateType {
   };
   contacts: {
     loading: boolean;
-    data: ImportContact[];
+    data: Contact[];
+  };
+  messageTemplate: {
+    loading: boolean;
+    data: Message[];
   };
 }
 
@@ -43,6 +52,11 @@ export default class UserModule extends VuexModule {
   }
 
   contactGroups: UserStateType['contactGroups'] = {
+    loading: true,
+    data: []
+  }
+
+  messageTemplate: UserStateType['messageTemplate'] = {
     loading: true,
     data: []
   }
@@ -59,6 +73,10 @@ export default class UserModule extends VuexModule {
 
   get getUserProfile() {
     return this.userProfile;
+  }
+
+  get getMessageTemplate(): UserStateType['messageTemplate'] {
+    return this.messageTemplate;
   }
 
   @Action({ rawError: true })
@@ -100,7 +118,7 @@ export default class UserModule extends VuexModule {
     const contactsGroupsRef = db.collection('groups').doc(id);
     batch.set(contactsGroupsRef, { name, groupOwner: uid, id });
 
-    await importedJson.map(async (contact: ImportContact) => {
+    await importedJson.map(async (contact: Contact) => {
       const contactsRef = await db.collection('groups').doc(id).collection('contacts').doc(contact.phoneNumber);
       await batch.set(contactsRef, { ...contact });
     });
@@ -119,11 +137,22 @@ export default class UserModule extends VuexModule {
   }
 
   @Action({ rawError: true })
+  fetchMessageTemplates(uid: string) {
+    firebase.firestore().collection('templates').where('templateOwner', '==', uid).onSnapshot(querySnapshot => {
+      const messageTemplatesResult: UserStateType['messageTemplate']['data'] = [];
+      querySnapshot.forEach(doc => {
+        messageTemplatesResult.push(doc.data());
+      });
+      return this.context.commit('SET_USER_MESSAGE_TEMPLATES', messageTemplatesResult);
+    });
+  }
+
+  @Action({ rawError: true })
   async addContacts(contacts: UserStateType['contacts']['data']): Promise<void> {
     const batch = firebase.firestore().batch();
     const { uid } = this.context.getters.getUserProfile;
 
-    await contacts.map(async (contact: ImportContact) => {
+    await contacts.map(async (contact: Contact) => {
       const contactsRef = await firebase.firestore().collection('contacts').doc(contact.phoneNumber);
       await batch.set(contactsRef, { contactOwner: uid, ...contact });
     });
@@ -173,5 +202,11 @@ export default class UserModule extends VuexModule {
   SET_USER_CONTACT(contacts: UserStateType['contacts']['data']) {
     this.contacts.data = contacts;
     this.contacts.loading = false;
+  }
+
+  @Mutation
+  SET_USER_MESSAGE_TEMPLATES(messageTemplate: UserStateType['messageTemplate']['data']) {
+    this.messageTemplate.data = messageTemplate;
+    this.messageTemplate.loading = false;
   }
 }
