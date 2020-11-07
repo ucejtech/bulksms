@@ -2,6 +2,8 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin'
 // import Axios from "axios"
 import * as twilio from 'twilio'
+import { v4 } from 'uuid';
+
 const client = twilio(functions.config().twilio.test.account_sid, functions.config().twilio.test.auth_token);
 
 admin.initializeApp({
@@ -17,11 +19,14 @@ admin.initializeApp({
 //         },
 //     });
 // };
+// const messageRequest = await makeRequest(
+//     functions.config().bulksms.api_auth, 'Basic', messageObj.length
+// ).post(`${functions.config().bulksms.base_url}/messages`, messageObj);
 
 exports.sendSMS = functions.https.onCall(async (data, context) => {
     try {
-        const { recipients, message } = data
-        // const userId = context.auth?.uid
+        const { recipients, message, saveAsTemplate } = data
+        const userId = context.auth?.uid
 
         if (recipients.length < 1 || !message.content) {
             return {
@@ -46,10 +51,13 @@ exports.sendSMS = functions.https.onCall(async (data, context) => {
                 })
         });
 
-        // const messageRequest = await makeRequest(
-        //     functions.config().bulksms.api_auth, 'Basic', messageObj.length
-        // ).post(`${functions.config().bulksms.base_url}/messages`, messageObj);
+        if (saveAsTemplate) {
+            const id = v4()
+            await admin.firestore().collection('templates').doc(id).set({ ...message, id, templateOwner: userId })
+        }
 
+        const mid = v4()
+        await admin.firestore().collection('messageHistory').doc(mid).set({ ...message, recipients, id: mid, messageOwner: userId })
     } catch (error) {
         console.log(error)
         return error.message
