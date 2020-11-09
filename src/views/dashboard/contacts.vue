@@ -261,6 +261,7 @@ export default class Contacts extends Vue {
   }
 
   sendMessage() {
+    // TODO: Handle Empty title error when saveAsTemplate is selected
     this.sendMessageLoading = true;
     this.sendBulkSMS(this.model.sendMessage)
       .then(() => {

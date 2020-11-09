@@ -26,6 +26,7 @@ admin.initializeApp({
 exports.sendSMS = functions.https.onCall(async (data, context) => {
     try {
         const { recipients, message, saveAsTemplate } = data
+        const date = new Date().toISOString()
         const userId = context.auth?.uid
 
         if (recipients.length < 1 || !message.content) {
@@ -53,11 +54,11 @@ exports.sendSMS = functions.https.onCall(async (data, context) => {
 
         if (saveAsTemplate) {
             const id = v4()
-            await admin.firestore().collection('templates').doc(id).set({ ...message, id, templateOwner: userId })
+            await admin.firestore().collection('templates').doc(id).set({ ...message, id, templateOwner: userId, date })
         }
 
         const mid = v4()
-        await admin.firestore().collection('messageHistory').doc(mid).set({ ...message, recipients, id: mid, messageOwner: userId })
+        await admin.firestore().collection('messageHistory').doc(mid).set({ ...message, recipients, id: mid, messageOwner: userId, date })
     } catch (error) {
         console.log(error)
         return error.message

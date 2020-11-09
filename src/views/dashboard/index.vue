@@ -42,9 +42,7 @@
               <label class="text-12 text-bold text-primary">Message</label>
               <v-btn text class="no-shadow" color="primary">VIEW</v-btn>
             </div>
-            <div class="text-10">
-              Mauris et scelerisque mi, ut auctor metus. Cras euismod mi vel elit molestie rutrum. Nunc lacinia non nibh eu auctor. Phasellus ornare ipsum lectus, et tristique ex aliquam sit...
-            </div>
+            <div class="text-10">{{ lastMessage }}...</div>
             <div class="mt-2 d-flex align-center">
               <i class="text-primary text-11 icon-history"></i>
               <label class="text-primary text-13 ml-3">History <span class="text-black text-8">10th October, 2020</span></label>
@@ -78,24 +76,13 @@
               <label class="text-13 mt-1 ml-3">Saved Templates</label>
             </div>
             <div class="template--timeline-content px-2 pb-4">
-              <ul class="template--timeline">
-                <li class="template mb-4 d-flex flex-column">
-                  <label class="template--title text-12 text-bold">Meeting Reminder</label>
-                  <label class="template--content mt-3 text-10"
-                    >Mauris et scelerisque mi, ut auctor metus. Cras euismod mi vel elit molestie rutrum. Nunc lacinia non nibh eu auctor. Phasellus ornare ipsum lectus, et tristique ex aliquam sit...</label
-                  >
-                </li>
-                <li class="template mb-4 d-flex flex-column">
-                  <label class="template--title text-12 text-bold">Meeting Reminder</label>
-                  <label class="template--content mt-3 text-10"
-                    >Mauris et scelerisque mi, ut auctor metus. Cras euismod mi vel elit molestie rutrum. Nunc lacinia non nibh eu auctor. Phasellus ornare ipsum lectus, et tristique ex aliquam sit...</label
-                  >
-                </li>
-                <li class="template mb-4 d-flex flex-column">
-                  <label class="template--title text-12 text-bold">Meeting Reminder</label>
-                  <label class="template--content mt-3 text-10"
-                    >Mauris et scelerisque mi, ut auctor metus. Cras euismod mi vel elit molestie rutrum. Nunc lacinia non nibh eu auctor. Phasellus ornare ipsum lectus, et tristique ex aliquam sit...</label
-                  >
+              <div class="text-center mt-16 pt-16" v-if="getMessageTemplate.data.length < 1">
+                No Message Template
+              </div>
+              <ul class="template--timeline" v-else>
+                <li class="template mb-4 d-flex flex-column" v-for="(template, index) in getMessageTemplate.data" :key="index">
+                  <label class="template--title text-12 text-bold">{{ template.title }}</label>
+                  <label class="template--content mt-3 text-10">{{ template.content }}...</label>
                 </li>
               </ul>
             </div>
@@ -153,8 +140,18 @@ export default class DashboardIndex extends Vue {
   @user.Getter
   getContactGroups!: UserStateType['contactGroups'];
 
+  @user.Getter
+  getMessageTemplate!: UserStateType['messageTemplate'];
+
+  @user.Getter
+  getMessageHistory!: UserStateType['messageTemplate'];
+
   get firstname(): string {
     return this.getLoggedInUser ? this.getLoggedInUser.displayName.split(' ')[0] : '';
+  }
+
+  get lastMessage(): string | undefined {
+    return this.getMessageHistory.data.length < 1 ? 'No Message Sent' : this.getMessageHistory.data[this.getMessageHistory.data.length - 1].content;
   }
 }
 </script>

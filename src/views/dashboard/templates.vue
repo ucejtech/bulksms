@@ -12,36 +12,70 @@
             </div>
           </div>
         </div>
-        <v-btn class="mt-6" color="primary" height="46" @click="importContactDialog = !importContactDialog" block>Create</v-btn>
+        <v-btn class="mt-6" color="primary" height="46" @click="createTemplateDialog = !createTemplateDialog" block>Create</v-btn>
       </v-col>
       <v-col cols="12" md="9">
         <div class="colored--accent--box contact--list d-flex align-center pl-3 mb-4">
-          <v-checkbox v-model="checkbox.all" :value="checkbox" label="#" hide-details required></v-checkbox>
+          <!-- <v-checkbox v-model="checkbox.all" :value="checkbox" label="#" hide-details required></v-checkbox> -->
+          <span>#</span>
           <span class="ml-7">Templates</span>
         </div>
 
-        <div class="d-flex align-center full-width full-height justify-center" v-if="true">
+        <div v-if="getMessageTemplate.data.length < 1" class="d-flex align-center full-width full-height justify-center">
           <div class="text-center mb-4"><img class="mb-4" src="@/assets/images/illustrations/contacts_search.svg" alt="no contact image" width="300px" /><br />No Template Available</div>
         </div>
-        <div class="mt-2 contact--display--list d-flex align-center pl-3" v-for="(contact, index) in getContacts.data" :key="index" v-else>
-          <v-checkbox v-model="model.sendMessage.recipients" :label="`${index + 1}`" :value="contact" hide-details required></v-checkbox>
-          <span class="ml-3 d-flex justify-space-between align-center full-width pa-2">
-            <div class="text-13 d-flex align-center justify-space-between">
-              <v-btn class="mx-2 no-shadow" width="30px" height="30px" fab dark small color="rgba(228, 88, 88, 0.2)">
-                <v-icon color="#000" size="15">mdi-account-outline</v-icon>
-              </v-btn>
-              <div>
-                <span> {{ contact.name }}</span>
-                <span class="ml-4"> {{ contact.phoneNumber }}</span>
+        <div v-else>
+          <div class="mt-2 contact--display--list d-flex align-center pl-3" v-for="(template, index) in getMessageTemplate.data" :key="index">
+            <!-- <v-checkbox v-model="model.createTemplate.recipients" :label="`${index + 1}`" :value="contact" hide-details required></v-checkbox> -->
+            <span>{{ index + 1 }}</span>
+            <span class="ml-3 d-flex justify-space-between align-center full-width pa-2">
+              <div class="text-13 d-flex align-center justify-space-between">
+                <v-btn class="mx-2 no-shadow" width="30px" height="30px" fab dark small color="rgba(228, 88, 88, 0.2)">
+                  <v-icon color="#000" size="15">icon-disk</v-icon>
+                </v-btn>
+                <div class="ml-3">
+                  <span class="text-bold"> {{ template.title }}</span>
+                  <div>{{ template.content.slice(0, 200) }}</div>
+                </div>
               </div>
-            </div>
-            <div class="delete">
-              <i class="icon-bin"></i>
-            </div>
-          </span>
+              <div class="ml-9">
+                <v-btn color="primary" depressed>Use</v-btn>
+              </div>
+            </span>
+          </div>
         </div>
       </v-col>
     </v-row>
+    <v-dialog v-model="createTemplateDialog" width="500px">
+      <v-card class="mx-auto pa-6 text-center">
+        <div class="d-flex justify-space-between">
+          <div>
+            <v-btn class="no-shadow" color="primary" height="33" width="33" fab><i class="icon-edit"></i></v-btn>
+            <label for="Import Contact" class="ml-4 text-13">Create Template</label>
+          </div>
+          <v-btn class="no-shadow" height="33" width="33" @click="createTemplateDialog = !createTemplateDialog" color="transparent" fab>
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </div>
+        <v-text-field class="mt-4" placeholder="Title" background-color="#f2f3fc" v-model="model.createTemplate.title" :rules="rules.title" hide-details="auto" :required="true" flat solo></v-text-field>
+        <v-textarea
+          solo
+          flat
+          class="mt-4"
+          background-color="#f2f3fc"
+          name="input-7-4"
+          :rules="rules.content"
+          v-model="model.createTemplate.content"
+          hide-details="auto"
+          placeholder="Type your message here"
+          height="320px"
+        >
+        </v-textarea>
+        <div class="full-width d-flex justify-space-around align-center">
+          <v-btn class="mt-6" color="primary" height="46" @click="createTemplate" :loading="createTemplateLoading">Create Template</v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -62,13 +96,9 @@ interface Model {
     };
     importedJson: UserStateType['contacts']['data'];
   };
-  sendMessage: {
-    recipients: Model['contactImport']['importedJson'];
-    message: {
-      title: string;
-      content: string;
-    };
-    saveAsTemplate: boolean;
+  createTemplate: {
+    title: string;
+    content: string;
   };
 }
 
@@ -90,18 +120,15 @@ export default class Templates extends Vue {
       },
       importedJson: []
     },
-    sendMessage: {
-      recipients: [],
-      message: {
-        title: '',
-        content: ''
-      },
-      saveAsTemplate: false
+    createTemplate: {
+      title: '',
+      content: ''
     }
   };
 
   rules = {
-    content: [(v: string) => !!v || 'Message Content is needed']
+    content: [(v: string) => !!v || 'Template Content is needed'],
+    title: [(v: string) => !!v || 'Template title is needed']
   };
 
   checkbox = {
@@ -111,19 +138,17 @@ export default class Templates extends Vue {
 
   addContactLoading = false;
 
-  sendMessageLoading = false;
+  createTemplateLoading = false;
 
   importJsonParsed = false;
 
-  importContactDialog = false;
-
-  sendMessageDialog = false;
+  createTemplateDialog = false;
 
   @auth.Getter
   getLoggedInUser!: AuthStateType['currentUser'];
 
   @user.Getter
-  getContacts!: UserStateType['contacts'];
+  getMessageTemplate!: UserStateType['messageTemplate'];
 
   get firstname(): string {
     if (this.getLoggedInUser && this.getLoggedInUser.name) {
@@ -132,77 +157,22 @@ export default class Templates extends Vue {
     return '';
   }
 
-  handleFilechanged(e: Event & { target: { files: FileList } }) {
-    this.model.contactImport.importedJson = [];
-    this.importJsonParsed = false;
-    if (e.target.files.length > 0) {
-      jsonReader(e.target.files[0]).then((jsonResult: UserStateType['contacts']['data']) => {
-        this.model.contactImport.importedJson = jsonResult;
-        this.importJsonParsed = true;
-      });
-    } else {
-      this.model.contactImport.importedJson = [];
-      this.importJsonParsed = false;
-    }
-  }
-
-  importContacts() {
-    const { group } = this.model.contactImport;
-    const { importedJson } = this.model.contactImport;
-
-    if (importedJson.length < 1) {
-      return this.$toast.error('No Contact Selected', 'Error', 'topRight');
-    }
-
-    this.addContactLoading = true;
-    if (group.name) {
-      this.model.contactImport.group.id = uuid();
-      this.addGroup({ group, importedJson })
-        .then(() => {
-          this.$toast.success('Contacts Group Added', 'Success', 'topRight');
-        })
-        .catch(err => {
-          console.log(err);
-          this.$toast.error(err, 'Error', 'topRight');
-        });
-    }
-
-    this.addContacts(importedJson)
+  createTemplate() {
+    this.createTemplateLoading = true;
+    this.sendBulkSMS(this.model.createTemplate)
       .then(() => {
-        this.$toast.success('Contacts Added', 'Success', 'topRight');
-        this.addContactLoading = false;
-        this.importContactDialog = false;
-      })
-      .catch(err => {
-        this.$toast.error(err, 'Error', 'topRight');
-        this.addContactLoading = false;
-      });
-
-    return true;
-  }
-
-  sendMessage() {
-    this.sendMessageLoading = true;
-    this.sendBulkSMS(this.model.sendMessage)
-      .then(() => {
-        this.sendMessageLoading = false;
+        this.createTemplateLoading = false;
         this.$toast.success('Messages Sent', 'Success', 'topRight');
-        this.sendMessageDialog = false;
+        this.createTemplateDialog = false;
       })
       .catch(() => {
-        this.sendMessageLoading = false;
+        this.createTemplateLoading = false;
         this.$toast.success('Messages not Sent', 'Error', 'topRight');
       });
-    this.sendMessageLoading = false;
+    this.createTemplateLoading = false;
   }
 
   @user.Action
-  private addContacts!: (contacts: Model['contactImport']['importedJson']) => Promise<void>;
-
-  @user.Action
-  private addGroup!: ({ group, importedJson }: Model['contactImport']) => Promise<void>;
-
-  @user.Action
-  private sendBulkSMS!: (sendMessageModel: object) => Promise<void>;
+  private sendBulkSMS!: (createTemplateModel: object) => Promise<void>;
 }
 </script>

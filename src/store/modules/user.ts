@@ -18,6 +18,7 @@ export interface Contact {
 export interface Message {
   title?: string;
   content?: string;
+  recipients?: string;
 }
 
 export interface UserStateType {
@@ -61,6 +62,11 @@ export default class UserModule extends VuexModule {
     data: []
   }
 
+  messageHistory: UserStateType['messageTemplate'] = {
+    loading: true,
+    data: []
+  }
+
   userProfile: UserStateType['userProfile'] | {} = {}
 
   get getContactGroups(): UserStateType['contactGroups'] {
@@ -77,6 +83,10 @@ export default class UserModule extends VuexModule {
 
   get getMessageTemplate(): UserStateType['messageTemplate'] {
     return this.messageTemplate;
+  }
+
+  get getMessageHistory(): UserStateType['messageTemplate'] {
+    return this.messageHistory;
   }
 
   @Action({ rawError: true })
@@ -148,6 +158,17 @@ export default class UserModule extends VuexModule {
   }
 
   @Action({ rawError: true })
+  fetchMessageHistory(uid: string) {
+    firebase.firestore().collection('messageHistory').where('messageOwner', '==', uid).onSnapshot(querySnapshot => {
+      const messageHistoryResult: UserStateType['messageTemplate']['data'] = [];
+      querySnapshot.forEach(doc => {
+        messageHistoryResult.push(doc.data());
+      });
+      return this.context.commit('SET_USER_MESSAGE_HISTORY', messageHistoryResult);
+    });
+  }
+
+  @Action({ rawError: true })
   async addContacts(contacts: UserStateType['contacts']['data']): Promise<void> {
     const batch = firebase.firestore().batch();
     const { uid } = this.context.getters.getUserProfile;
@@ -208,5 +229,11 @@ export default class UserModule extends VuexModule {
   SET_USER_MESSAGE_TEMPLATES(messageTemplate: UserStateType['messageTemplate']['data']) {
     this.messageTemplate.data = messageTemplate;
     this.messageTemplate.loading = false;
+  }
+
+  @Mutation
+  SET_USER_MESSAGE_HISTORY(messageHistory: UserStateType['messageTemplate']['data']) {
+    this.messageHistory.data = messageHistory;
+    this.messageHistory.loading = false;
   }
 }

@@ -24,6 +24,8 @@ firebase.auth().onAuthStateChanged(user => {
     store.dispatch('user/fetchDBProfile', user.uid);
     store.dispatch('user/fetchContacts', user.uid);
     store.dispatch('user/fetchContactGroups', user.uid);
+    store.dispatch('user/fetchMessageTemplates', user.uid);
+    store.dispatch('user/fetchMessageHistory', user.uid);
   }
 });
 
