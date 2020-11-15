@@ -2,14 +2,38 @@
   <div class="mt-5">
     <v-row>
       <v-col cols="12" md="3">
-        <v-text-field placeholder="Search Contact" background-color="#f2f3fc" hide-details="auto" :required="true" flat append-icon="icon-magnify" solo></v-text-field>
+        <v-text-field
+          placeholder="Search Contact"
+          background-color="#f2f3fc"
+          hide-details="auto"
+          :required="true"
+          flat
+          append-icon="icon-magnify"
+          solo
+        ></v-text-field>
         <div class="contact--display--groups mt-6 pa-4">
           <div class="selections d-flex justify-space-between align-center">
-            <v-checkbox v-model="checkbox.messageRecipient" value="all" label="All" hide-details required></v-checkbox>
+            <v-checkbox
+              v-model="checkbox.messageRecipient"
+              value="all"
+              label="All"
+              hide-details
+              required
+            ></v-checkbox>
             <span>1250</span>
           </div>
-          <div class="selections d-flex justify-space-between align-center mt-3" v-for="(group, index) in getContactGroups.data" :key="index">
-            <v-checkbox v-model="checkbox.messageRecipient" :label="group.name" :value="group.id" hide-details required></v-checkbox>
+          <div
+            class="selections d-flex justify-space-between align-center mt-3"
+            v-for="(group, index) in getContactGroups.data"
+            :key="index"
+          >
+            <v-checkbox
+              v-model="checkbox.messageRecipient"
+              :label="group.name"
+              :value="group.id"
+              hide-details
+              required
+            ></v-checkbox>
             <span>30</span>
           </div>
         </div>
@@ -17,28 +41,76 @@
           <div class="ml-4">Import Contacts</div>
           <div class="mt-4 d-flex">
             <img src="@/assets/images/illustrations/hand-right.svg" alt="" />
-            <div class="d-flex justify-center align-end full-width flex-column text-center">
+            <div
+              class="d-flex justify-center align-end full-width flex-column text-center"
+            >
               <img class="mb-3" src="@/assets/images/icons/json.svg" alt="" />
               Supported Files
             </div>
           </div>
         </div>
-        <v-btn class="mt-6" color="primary" height="46" @click="importContactDialog = !importContactDialog" block>Import Contacts</v-btn>
+        <v-btn
+          class="mt-6"
+          color="primary"
+          height="46"
+          @click="importContactDialog = !importContactDialog"
+          block
+          >Import Contacts</v-btn
+        >
       </v-col>
       <v-col cols="12" md="7">
-        <div class="colored--accent--box contact--list d-flex align-center pl-3 mb-4">
-          <v-checkbox v-model="checkbox.all" :value="checkbox.messageRecipient === 'all'" label="#" hide-details required></v-checkbox>
+        <div
+          class="colored--accent--box contact--list d-flex align-center pl-3 mb-4"
+        >
+          <v-checkbox
+            v-model="checkbox.all"
+            :value="checkbox.messageRecipient === 'all'"
+            label="#"
+            hide-details
+            required
+          ></v-checkbox>
           <span class="ml-7">Phone Numbers</span>
         </div>
 
-        <div class="d-flex align-center full-width full-height justify-center" v-if="getContacts.data.length < 1">
-          <div class="text-center mb-4"><img class="mb-4" src="@/assets/images/illustrations/contacts_search.svg" alt="no contact image" width="300px" /><br />No Contact Available</div>
+        <div
+          class="d-flex align-center full-width full-height justify-center"
+          v-if="getContacts.data.length < 1"
+        >
+          <div class="text-center mb-4">
+            <img
+              class="mb-4"
+              src="@/assets/images/illustrations/contacts_search.svg"
+              alt="no contact image"
+              width="300px"
+            /><br />No Contact Available
+          </div>
         </div>
-        <div class="mt-2 contact--display--list d-flex align-center pl-3" v-for="(contact, index) in getContacts.data" :key="index" v-else>
-          <v-checkbox v-model="model.sendMessage.recipients" :label="`${index + 1}`" :value="contact" hide-details required></v-checkbox>
-          <span class="ml-3 d-flex justify-space-between align-center full-width pa-2">
+        <div
+          class="mt-2 contact--display--list d-flex align-center pl-3"
+          v-for="(contact, index) in getContacts.data"
+          :key="index"
+          v-else
+        >
+          <v-checkbox
+            v-model="model.sendMessage.recipients"
+            :label="`${index + 1}`"
+            :value="contact"
+            hide-details
+            required
+          ></v-checkbox>
+          <span
+            class="ml-3 d-flex justify-space-between align-center full-width pa-2"
+          >
             <div class="text-13 d-flex align-center justify-space-between">
-              <v-btn class="mx-2 no-shadow" width="30px" height="30px" fab dark small color="rgba(228, 88, 88, 0.2)">
+              <v-btn
+                class="mx-2 no-shadow"
+                width="30px"
+                height="30px"
+                fab
+                dark
+                small
+                color="rgba(228, 88, 88, 0.2)"
+              >
                 <v-icon color="#000" size="15">mdi-account-outline</v-icon>
               </v-btn>
               <div>
@@ -53,56 +125,137 @@
         </div>
       </v-col>
       <v-col cols="12" md="2">
-        <v-btn color="primary" height="46" @click="sendMessageDialog = !sendMessageDialog" block>Send Message</v-btn>
+        <v-btn
+          color="primary"
+          height="46"
+          @click="sendMessageDialog = !sendMessageDialog"
+          block
+          >Send Message</v-btn
+        >
       </v-col>
     </v-row>
     <v-dialog v-model="importContactDialog" width="500px">
       <v-card class="mx-auto pa-6 text-center">
         <div class="d-flex justify-space-between">
           <div>
-            <v-btn class="no-shadow" color="primary" height="33" width="33" fab><i class="icon-upload"></i></v-btn>
-            <label for="Import Contact" class="ml-4 text-13">Import Contact</label>
+            <v-btn class="no-shadow" color="primary" height="33" width="33" fab
+              ><i class="icon-upload"></i
+            ></v-btn>
+            <label for="Import Contact" class="ml-4 text-13"
+              >Import Contact</label
+            >
           </div>
-          <v-btn class="no-shadow" height="33" width="33" @click="importContactDialog = !importContactDialog" color="transparent" fab>
+          <v-btn
+            class="no-shadow"
+            height="33"
+            width="33"
+            @click="importContactDialog = !importContactDialog"
+            color="transparent"
+            fab
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </div>
-        <v-text-field class="mt-9" placeholder="Group Name (Optional)" background-color="#f2f3fc" v-model="model.contactImport.group.name" hide-details="auto" :required="true" flat solo></v-text-field>
-        <label for="importContact" class="mt-5 input d-flex align-center">Choose file</label>
-        <chips-group class="mt-5" v-if="importJsonParsed" :chipData="model.contactImport.importedJson.map(x => x.phoneNumber)"></chips-group>
-        <input type="file" id="importContact" class="visibility-hidden" @change="handleFilechanged" accept=".json" />
-        <v-btn class="mt-6" color="primary" height="46" @click="importContacts" :loading="addContactLoading">Import Contacts</v-btn>
+        <v-text-field
+          class="mt-9"
+          placeholder="Group Name (Optional)"
+          background-color="#f2f3fc"
+          v-model="model.contactImport.group.name"
+          hide-details="auto"
+          :required="true"
+          flat
+          solo
+        ></v-text-field>
+        <label for="importContact" class="mt-5 input d-flex align-center"
+          >Choose file</label
+        >
+        <chips-group
+          class="mt-5"
+          v-if="importJsonParsed"
+          :chipData="model.contactImport.importedJson.map((x) => x.phoneNumber)"
+        ></chips-group>
+        <input
+          type="file"
+          id="importContact"
+          class="visibility-hidden"
+          @change="handleFilechanged"
+          accept=".json"
+        />
+        <v-btn
+          class="mt-6"
+          color="primary"
+          height="46"
+          @click="importContacts"
+          :loading="addContactLoading"
+          >Import Contacts</v-btn
+        >
       </v-card>
     </v-dialog>
     <v-dialog v-model="sendMessageDialog" width="500px">
       <v-card class="mx-auto pa-6 text-center">
         <div class="d-flex justify-space-between">
           <div>
-            <v-btn class="no-shadow" color="primary" height="33" width="33" fab><i class="icon-edit"></i></v-btn>
+            <v-btn class="no-shadow" color="primary" height="33" width="33" fab
+              ><i class="icon-edit"></i
+            ></v-btn>
             <label for="Import Contact" class="ml-4 text-13">Compose</label>
           </div>
-          <v-btn class="no-shadow" height="33" width="33" @click="sendMessageDialog = !sendMessageDialog" color="transparent" fab>
+          <v-btn
+            class="no-shadow"
+            height="33"
+            width="33"
+            @click="sendMessageDialog = !sendMessageDialog"
+            color="transparent"
+            fab
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </div>
-        <chips-group class="mt-9" v-if="model.sendMessage.recipients.length > 0" :chipData="model.sendMessage.recipients.map(x => x.phoneNumber)"></chips-group>
-        <v-text-field class="mt-4" placeholder="Title" background-color="#f2f3fc" v-model="model.sendMessage.message.title" hide-details="auto" :required="true" flat solo></v-text-field>
-        <v-textarea
-          solo
-          flat
-          class="mt-4"
-          background-color="#f2f3fc"
-          name="input-7-4"
-          :rules="rules.content"
-          v-model="model.sendMessage.message.content"
-          hide-details="auto"
-          placeholder="Type your message here"
-          height="320px"
-        ></v-textarea>
-        <div class="full-width d-flex justify-space-between align-center">
-          <v-btn class="mt-6" color="primary" height="46" @click="sendMessage" :loading="sendMessageLoading">Send Message</v-btn>
-          <v-checkbox v-model="model.sendMessage.saveAsTemplate" label="Save as template" hide-details required></v-checkbox>
-        </div>
+        <v-form ref="sendMessageForm">
+          <chips-group
+            class="mt-9"
+            v-if="model.sendMessage.recipients.length > 0"
+            :chipData="model.sendMessage.recipients.map((x) => x.phoneNumber)"
+          ></chips-group>
+          <v-text-field
+            class="mt-4"
+            placeholder="Title"
+            background-color="#f2f3fc"
+            v-model="model.sendMessage.message.title"
+            hide-details="auto"
+            :required="true"
+            flat
+            solo
+          ></v-text-field>
+          <v-textarea
+            solo
+            flat
+            class="mt-4"
+            background-color="#f2f3fc"
+            name="input-7-4"
+            :rules="rules.content"
+            v-model="model.sendMessage.message.content"
+            hide-details="auto"
+            placeholder="Type your message here"
+            height="320px"
+          ></v-textarea>
+          <div class="full-width d-flex justify-space-between align-center">
+            <v-btn
+              class="mt-6"
+              color="primary"
+              height="46"
+              @click="sendMessage"
+              :loading="sendMessageLoading"
+              >Send Message</v-btn
+            >
+            <v-checkbox
+              v-model="model.sendMessage.saveAsTemplate"
+              label="Save as template"
+              hide-details
+              required
+            ></v-checkbox>
+          </div>
+        </v-form>
       </v-card>
     </v-dialog>
   </div>
@@ -197,7 +350,9 @@ export default class Contacts extends Vue {
       if (val.messageRecipient === 'all') {
         this.model.sendMessage.recipients = this.getContacts.data;
       } else {
-        this.model.sendMessage.recipients = await FirebaseHelper.getGroupContacts(val.messageRecipient);
+        this.model.sendMessage.recipients = await FirebaseHelper.getGroupContacts(
+          val.messageRecipient
+        );
       }
     } else {
       this.model.sendMessage.recipients = [];
@@ -215,10 +370,12 @@ export default class Contacts extends Vue {
     this.model.contactImport.importedJson = [];
     this.importJsonParsed = false;
     if (e.target.files.length > 0) {
-      jsonReader(e.target.files[0]).then((jsonResult: UserStateType['contacts']['data']) => {
-        this.model.contactImport.importedJson = jsonResult;
-        this.importJsonParsed = true;
-      });
+      jsonReader(e.target.files[0]).then(
+        (jsonResult: UserStateType['contacts']['data']) => {
+          this.model.contactImport.importedJson = jsonResult;
+          this.importJsonParsed = true;
+        }
+      );
     } else {
       this.model.contactImport.importedJson = [];
       this.importJsonParsed = false;
@@ -261,26 +418,40 @@ export default class Contacts extends Vue {
   }
 
   sendMessage() {
-    // TODO: Handle Empty title error when saveAsTemplate is selected
-    this.sendMessageLoading = true;
-    this.sendBulkSMS(this.model.sendMessage)
-      .then(() => {
-        this.sendMessageLoading = false;
-        this.$toast.success('Messages Sent', 'Success', 'topRight');
-        this.sendMessageDialog = false;
-      })
-      .catch(() => {
-        this.sendMessageLoading = false;
-        this.$toast.success('Messages not Sent', 'Error', 'topRight');
-      });
-    this.sendMessageLoading = false;
+    if ((this.$refs.sendMessageForm as Vue & { validate: () => boolean }).validate()) {
+      if (!this.model.sendMessage.message.title && this.model.sendMessage.saveAsTemplate) {
+        this.$toast.error('Message Title needed for templates', 'Error', 'topRight');
+        return;
+      }
+      if (this.model.sendMessage.recipients.length < 1) {
+        this.$toast.error('Message recipients needed', 'Error', 'topRight');
+        return;
+      }
+      this.sendMessageLoading = true;
+      this.sendBulkSMS(this.model.sendMessage)
+        .then(() => {
+          this.sendMessageLoading = false;
+          this.$toast.success('Messages Sent', 'Success', 'topRight');
+          this.sendMessageDialog = false;
+        })
+        .catch(() => {
+          this.sendMessageLoading = false;
+          this.$toast.error('Messages not Sent', 'Error', 'topRight');
+        });
+      this.sendMessageLoading = false;
+    }
   }
 
   @user.Action
-  private addContacts!: (contacts: Model['contactImport']['importedJson']) => Promise<void>;
+  private addContacts!: (
+    contacts: Model['contactImport']['importedJson']
+  ) => Promise<void>;
 
   @user.Action
-  private addGroup!: ({ group, importedJson }: Model['contactImport']) => Promise<void>;
+  private addGroup!: ({
+    group,
+    importedJson
+  }: Model['contactImport']) => Promise<void>;
 
   @user.Action
   private sendBulkSMS!: (sendMessageModel: object) => Promise<void>;
@@ -326,7 +497,7 @@ export default class Contacts extends Vue {
 .contact--display--groups .selections {
   font-size: 10px;
 }
-input[type='file'] {
+input[type="file"] {
   width: 0 !important;
   height: 0 !important;
 }

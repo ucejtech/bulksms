@@ -1,7 +1,9 @@
 <template>
   <v-navigation-drawer class="app--drawer px-5" color="secondary" width="225px" app>
     <div class="d-flex justify-space-between mt-5">
-      <div class="text-primary app--name text-lowercase">{{ appConstants.appTitle }}</div>
+      <div class="text-primary app--name text-lowercase">
+          <img src="@/assets/images/logo.png" alt="logo" width="100px">
+      </div>
       <img src="@/assets/images/icons/paper-plane.svg" alt="" />
     </div>
     <div class="mt-8 d-flex align-center">

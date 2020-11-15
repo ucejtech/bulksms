@@ -4,7 +4,8 @@
     <div id="home" :class="!$vuetify.breakpoint.mdAndUp ? 'abstract' : ''">
       <nav class="nav d-flex align-center my-4 mx-md-16 mx-7">
         <div class="app--name mr-md-16 text-lowercase">
-          {{ appConstants.appTitle }}
+          <!-- {{ appConstants.appTitle }} -->
+          <img src="@/assets/images/logo.png" alt="logo" width="150px">
         </div>
         <div class="nav--links ml-md-16">
           <span class="links mx-7">About</span>

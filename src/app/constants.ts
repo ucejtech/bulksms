@@ -1,7 +1,7 @@
 import { ConstantsObject } from '../types';
 
 const constants: ConstantsObject = {
-  appTitle: 'Spaas',
+  appTitle: 'Voya',
   authError: {
     'auth/user-not-found': 'User does not exist',
     'auth/network-request-failed': 'No Internet Connection'
