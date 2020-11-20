@@ -46,13 +46,15 @@ import { Vue, Component } from 'vue-property-decorator';
 import animation from '@/utils/animation';
 import Signin from '@/views/sessions/signin.vue';
 import Signup from '@/views/sessions/signup.vue';
+import ForgotPassword from '@/views/sessions/forgotpass.vue';
 import appConstants from '../app/constants';
 
 @Component({
   name: 'Home',
   components: {
     signin: Signin,
-    signup: Signup
+    signup: Signup,
+    forgotPass: ForgotPassword
   }
 })
 export default class Home extends Vue {
@@ -76,8 +78,16 @@ export default class Home extends Vue {
         link: 'Create one'
       };
     }
+    if (this.componentId === 'signup') {
+      return {
+        main: `Register to own a ${appConstants.appTitle} Account`,
+        sub: `Already have a ${appConstants.appTitle} account?`,
+        link: 'Log In'
+      };
+    }
+
     return {
-      main: `Register to own a ${appConstants.appTitle} Account`,
+      main: `Reset password for ${appConstants.appTitle} Account`,
       sub: `Already have a ${appConstants.appTitle} account?`,
       link: 'Log In'
     };

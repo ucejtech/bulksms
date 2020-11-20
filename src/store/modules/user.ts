@@ -3,7 +3,7 @@ import {
   VuexModule, Module, Action, Mutation
 } from 'vuex-module-decorators';
 
-type groupType = {
+export type groupType = {
   name: string;
   contacts: string[];
   id: string;
@@ -159,13 +159,14 @@ export default class UserModule extends VuexModule {
 
   @Action({ rawError: true })
   fetchMessageHistory(uid: string) {
-    firebase.firestore().collection('messageHistory').where('messageOwner', '==', uid).onSnapshot(querySnapshot => {
-      const messageHistoryResult: UserStateType['messageTemplate']['data'] = [];
-      querySnapshot.forEach(doc => {
-        messageHistoryResult.push(doc.data());
+    firebase.firestore().collection('messageHistory').where('messageOwner', '==', uid).orderBy('date')
+      .onSnapshot(querySnapshot => {
+        const messageHistoryResult: UserStateType['messageTemplate']['data'] = [];
+        querySnapshot.forEach(doc => {
+          messageHistoryResult.push(doc.data());
+        });
+        return this.context.commit('SET_USER_MESSAGE_HISTORY', messageHistoryResult);
       });
-      return this.context.commit('SET_USER_MESSAGE_HISTORY', messageHistoryResult);
-    });
   }
 
   @Action({ rawError: true })
@@ -203,6 +204,18 @@ export default class UserModule extends VuexModule {
     });
   }
 
+  @Action({ rawError: true })
+  addTemplate(addTemplate: object) {
+    return new Promise((resolve, reject) => {
+      const addTemplateRequest = firebase.functions().httpsCallable('createMessageTemplate');
+      addTemplateRequest(addTemplate).then(() => {
+        resolve(this.context.getters.getMessageTemplate);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
+
   @Mutation
   SET_USER_PROFILE(userProfile: UserStateType['userProfile']) {
     this.userProfile = userProfile;
@@ -211,6 +224,10 @@ export default class UserModule extends VuexModule {
   @Mutation
   CLEAR_USER() {
     this.userProfile = {};
+    this.contactGroups.data = [];
+    this.contacts.data = [];
+    this.messageHistory.data = [];
+    this.messageTemplate.data = [];
   }
 
   @Mutation

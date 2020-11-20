@@ -1,7 +1,7 @@
 :root {
     --primary: #e22726;
     --secondary: #f7c7c7;
-    --accent: #F2F3FC;
+    --accent: #fff2f2;
     --error: #b71c1c;
 }
 
@@ -51,7 +51,8 @@ textarea {
 }
 
 input::placeholder,
-textarea::placeholder {
+textarea::placeholder,
+.v-label {
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
@@ -133,6 +134,30 @@ input:focus {
 
 .text-15 {
     font-size: 15px;
+}
+
+.text-16 {
+    font-size: 16px;
+}
+
+.text-17 {
+    font-size: 17px;
+}
+
+.text-18 {
+    font-size: 18px;
+}
+
+.text-19 {
+    font-size: 19px;
+}
+
+.text-20 {
+    font-size: 20px;
+}
+
+.text-21 {
+    font-size: 21px;
 }
 
 .text-white {

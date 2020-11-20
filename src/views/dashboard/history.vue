@@ -2,30 +2,68 @@
   <div class="mt-5">
     <v-row>
       <v-col cols="12">
-        <div class="colored--accent--box contact--list d-flex align-center pl-3 mb-4">
-          <v-checkbox v-model="checkbox.all" :value="checkbox" label="#" hide-details required></v-checkbox>
-          <span class="ml-7">Templates</span>
+        <div
+          class="colored--accent--box contact--list d-flex align-center pl-3 mb-4"
+        >
+          <span class="text-13">#</span>
+          <span class="ml-7">History</span>
         </div>
-
-        <div class="d-flex align-center full-width full-height justify-center" v-if="true">
-          <div class="text-center mb-4"><img class="mb-4" src="@/assets/images/illustrations/contacts_search.svg" alt="no contact image" width="300px" /><br />No History Available</div>
-        </div>
-        <div class="mt-2 contact--display--list d-flex align-center pl-3" v-for="(contact, index) in getContacts.data" :key="index" v-else>
-          <v-checkbox v-model="model.sendMessage.recipients" :label="`${index + 1}`" :value="contact" hide-details required></v-checkbox>
-          <span class="ml-3 d-flex justify-space-between align-center full-width pa-2">
-            <div class="text-13 d-flex align-center justify-space-between">
-              <v-btn class="mx-2 no-shadow" width="30px" height="30px" fab dark small color="rgba(228, 88, 88, 0.2)">
-                <v-icon color="#000" size="15">mdi-account-outline</v-icon>
-              </v-btn>
-              <div>
-                <span> {{ contact.name }}</span>
-                <span class="ml-4"> {{ contact.phoneNumber }}</span>
+        <h3 v-if="getMessageHistory.loading" class="text-center text--accent">
+          Fetching ...
+        </h3>
+        <div v-else>
+          <div
+            class="d-flex align-center full-width full-height justify-center"
+            v-if="getMessageHistory.data.length < 1"
+          >
+            <div class="text-center mb-4">
+              <img
+                class="mb-4"
+                src="@/assets/images/illustrations/contacts_search.svg"
+                alt="no contact image"
+                width="300px"
+              /><br />No History Available
+            </div>
+          </div>
+          <!-- <div class="mt-2 contact--display--list d-flex align-center pl-3" v-for="(message, index) in getMessageHistory.data" :key="index" v-else> -->
+          <div
+            class="mt-2 contact--display--list d-flex align-center pl-3"
+            v-for="(message, index) in getMessageHistory.data"
+            :key="index"
+            v-else
+          >
+            <!-- <v-checkbox v-model="model.createTemplate.recipients" :label="`${index + 1}`" :value="contact" hide-details required></v-checkbox> -->
+            <span class="text-13">{{ index + 1 }}</span>
+            <span
+              class="ml-3 d-flex justify-space-between align-center full-width pa-2"
+            >
+              <div
+                class="text-13 d-flex align-center justify-space-between message-content"
+              >
+                <v-btn
+                  class="mx-2 no-shadow"
+                  width="30px"
+                  height="30px"
+                  fab
+                  dark
+                  small
+                  color="rgba(228, 88, 88, 0.2)"
+                >
+                  <v-icon color="#000" size="15">icon-message</v-icon>
+                </v-btn>
+                <div class="ml-3">
+                  <span class="text-bold"> {{ message.title }}</span>
+                  <div>{{ message.content.slice(0, 200) }}</div>
+                  <span class="text-12 text-primary">Sent to {{ message.recipients.length }} Contact(s)</span>
+                  <div class="ml-2 dot" />
+                  <div class="ml-2 text-12 d-inline">{{readDate(message.date)}}</div>
+                </div>
               </div>
-            </div>
-            <div class="delete">
-              <i class="icon-bin"></i>
-            </div>
-          </span>
+              <!-- <div class="ml-9">
+                <v-btn color="primary" depressed>Use</v-btn>
+              </div> -->
+            </span>
+          </div>
         </div>
       </v-col>
     </v-row>
@@ -36,9 +74,9 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { AuthStateType } from '@/store/modules/auth';
-import jsonReader from '@/utils/jsonReader';
+import Dates from '@/utils/dates';
+
 import { UserStateType } from '@/store/modules/user';
-import uuid from '@/utils/uuid';
 import ChipsGroup from '../../components/dashboard/chips-groups.vue';
 
 interface Model {
@@ -110,7 +148,7 @@ export default class History extends Vue {
   getLoggedInUser!: AuthStateType['currentUser'];
 
   @user.Getter
-  getContacts!: UserStateType['contacts'];
+  getMessageHistory!: UserStateType['messageTemplate'];
 
   get firstname(): string {
     if (this.getLoggedInUser && this.getLoggedInUser.name) {
@@ -119,53 +157,9 @@ export default class History extends Vue {
     return '';
   }
 
-  handleFilechanged(e: Event & { target: { files: FileList } }) {
-    this.model.contactImport.importedJson = [];
-    this.importJsonParsed = false;
-    if (e.target.files.length > 0) {
-      jsonReader(e.target.files[0]).then((jsonResult: UserStateType['contacts']['data']) => {
-        this.model.contactImport.importedJson = jsonResult;
-        this.importJsonParsed = true;
-      });
-    } else {
-      this.model.contactImport.importedJson = [];
-      this.importJsonParsed = false;
-    }
-  }
-
-  importContacts() {
-    const { group } = this.model.contactImport;
-    const { importedJson } = this.model.contactImport;
-
-    if (importedJson.length < 1) {
-      return this.$toast.error('No Contact Selected', 'Error', 'topRight');
-    }
-
-    this.addContactLoading = true;
-    if (group.name) {
-      this.model.contactImport.group.id = uuid();
-      this.addGroup({ group, importedJson })
-        .then(() => {
-          this.$toast.success('Contacts Group Added', 'Success', 'topRight');
-        })
-        .catch(err => {
-          console.log(err);
-          this.$toast.error(err, 'Error', 'topRight');
-        });
-    }
-
-    this.addContacts(importedJson)
-      .then(() => {
-        this.$toast.success('Contacts Added', 'Success', 'topRight');
-        this.addContactLoading = false;
-        this.importContactDialog = false;
-      })
-      .catch(err => {
-        this.$toast.error(err, 'Error', 'topRight');
-        this.addContactLoading = false;
-      });
-
-    return true;
+  // eslint-disable-next-line class-methods-use-this
+  readDate(dateString: string) {
+    return Dates.readableDate(dateString);
   }
 
   sendMessage() {
@@ -184,12 +178,17 @@ export default class History extends Vue {
   }
 
   @user.Action
-  private addContacts!: (contacts: Model['contactImport']['importedJson']) => Promise<void>;
-
-  @user.Action
-  private addGroup!: ({ group, importedJson }: Model['contactImport']) => Promise<void>;
-
-  @user.Action
   private sendBulkSMS!: (sendMessageModel: object) => Promise<void>;
 }
 </script>
+
+<style>
+.dot {
+  height: 4px !important;
+  width: 4px !important;
+  border-radius: 50%;
+  display: inline-block;
+  /* border: 1px solid blue; */
+  background: var(--primary) !important;
+}
+</style>

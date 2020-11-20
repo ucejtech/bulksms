@@ -20,7 +20,7 @@
               hide-details
               required
             ></v-checkbox>
-            <span>1250</span>
+            <!-- <span>1250</span> -->
           </div>
           <div
             class="selections d-flex justify-space-between align-center mt-3"
@@ -34,7 +34,7 @@
               hide-details
               required
             ></v-checkbox>
-            <span>30</span>
+            <!-- <span>{{getGroupCon.length}}</span> -->
           </div>
         </div>
         <div class="mt-6 pt-3 pr-3 import--csv text-12">
@@ -181,6 +181,9 @@
           @change="handleFilechanged"
           accept=".json"
         />
+         <div>
+            <a href="/sample.json" download="sample">Download a sample</a>
+         </div>
         <v-btn
           class="mt-6"
           color="primary"
@@ -266,7 +269,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { AuthStateType } from '@/store/modules/auth';
 import jsonReader from '@/utils/jsonReader';
-import { UserStateType } from '@/store/modules/user';
+import { Contact, UserStateType } from '@/store/modules/user';
 import uuid from '@/utils/uuid';
 import ChipsGroup from '../../components/dashboard/chips-groups.vue';
 import FirebaseHelper from '../../services/firebase';
@@ -350,9 +353,7 @@ export default class Contacts extends Vue {
       if (val.messageRecipient === 'all') {
         this.model.sendMessage.recipients = this.getContacts.data;
       } else {
-        this.model.sendMessage.recipients = await FirebaseHelper.getGroupContacts(
-          val.messageRecipient
-        );
+        this.model.sendMessage.recipients = await this.getGroupContacts(val.messageRecipient);
       }
     } else {
       this.model.sendMessage.recipients = [];
@@ -364,6 +365,13 @@ export default class Contacts extends Vue {
       return this.getLoggedInUser.name.split(' ')[0];
     }
     return '';
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async getGroupContacts(id: string): Promise<Contact[]> {
+    return FirebaseHelper.getGroupContacts(
+      id
+    );
   }
 
   handleFilechanged(e: Event & { target: { files: FileList } }) {
@@ -438,7 +446,6 @@ export default class Contacts extends Vue {
           this.sendMessageLoading = false;
           this.$toast.error('Messages not Sent', 'Error', 'topRight');
         });
-      this.sendMessageLoading = false;
     }
   }
 

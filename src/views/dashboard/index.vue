@@ -10,23 +10,30 @@
             >,
             <div>Welcome back</div>
           </label>
-          <label class="d-flex align-end app--date">
-            20th October, 2020
-          </label>
+          <label class="d-flex align-end app--date"> 20th October, 2020 </label>
         </div>
       </div>
       <div class="colored--box"></div>
       <v-row class="mt-4">
         <v-col cols="12" md="6">
-          <v-card class="pl-4 pb-4 contact--card" color="#04A4E4" height="130px" flat>
+          <v-card
+            class="pl-4 pb-4 contact--card"
+            color="#04A4E4"
+            height="130px"
+            flat
+          >
             <div class="d-flex align-center pt-6">
               <div>
-                <label class="value text-white">{{ getContactGroups.data.length }}</label>
+                <label class="value text-white">{{
+                  getContactGroups.data.length
+                }}</label>
                 <br />
                 <label class="value--desc text-white"> Groups</label>
               </div>
               <div class="ml-4">
-                <label class="value text-white">{{ getContacts.data.length }}</label>
+                <label class="value text-white">{{
+                  getContacts.data.length
+                }}</label>
                 <br />
                 <label class="value--desc text-white"> Total</label>
               </div>
@@ -37,24 +44,48 @@
             </div>
           </v-card>
 
-          <v-card class="mt-4 px-4 pb-4 history--card" color="#EEEEEE" height="130px" flat>
+          <v-card
+            class="mt-4 px-4 pb-4 history--card"
+            color="#EEEEEE"
+            height="130px"
+            flat
+          >
             <div class="d-flex justify-space-between align-center pt-3">
               <label class="text-12 text-bold text-primary">Message</label>
-              <v-btn text class="no-shadow" color="primary">VIEW</v-btn>
+              <v-btn text class="no-shadow" color="primary" to="history"
+                >VIEW</v-btn
+              >
             </div>
             <div class="text-10">{{ lastMessage }}...</div>
             <div class="mt-2 d-flex align-center">
               <i class="text-primary text-11 icon-history"></i>
-              <label class="text-primary text-13 ml-3">History <span class="text-black text-8">10th October, 2020</span></label>
+              <label class="text-primary text-13 ml-3"
+                >History
+                <span class="text-black text-8">10th October, 2020</span></label
+              >
             </div>
           </v-card>
 
-          <v-card class="mt-4 px-4 pb-4 account--card" color="#EEEEEE" height="130px" flat>
+          <v-card
+            class="mt-4 px-4 pb-4 account--card"
+            color="#EEEEEE"
+            height="130px"
+            flat
+          >
             <div class="d-flex align-center pt-6">
               <img src="@/assets/images/avatar/richie.svg" alt="" />
               <div class="d-flex flex-column ml-3">
-                <span class="no-shadow text-10 text-primary">VIEW PROFILE</span>
-                <span class="text-8">Joined {{ getLoggedInUser ? getLoggedInUser.metadata.creationTime : '' }}</span>
+                <span
+                  class="no-shadow text-10 text-primary link px-0"
+                  @click="$router.push('account')"
+                  >VIEW PROFILE</span
+                >
+                <span class="text-8"
+                  >Joined
+                  {{
+                    getLoggedInUser ? getLoggedInUser.metadata.creationTime : ""
+                  }}</span
+                >
               </div>
             </div>
             <!-- <div class="text-10">
@@ -70,19 +101,35 @@
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-card class="pl-4 template--card" color="#C0DBCF" height="435px" flat>
+          <v-card
+            class="pl-4 template--card"
+            color="#C0DBCF"
+            height="435px"
+            flat
+          >
             <div class="d-flex align-center pt-4 mb-4">
               <i class="icon-dashboard"></i>
               <label class="text-13 mt-1 ml-3">Saved Templates</label>
             </div>
             <div class="template--timeline-content px-2 pb-4">
-              <div class="text-center mt-16 pt-16" v-if="getMessageTemplate.data.length < 1">
+              <div
+                class="text-center mt-16 pt-16"
+                v-if="getMessageTemplate.data.length < 1"
+              >
                 No Message Template
               </div>
               <ul class="template--timeline" v-else>
-                <li class="template mb-4 d-flex flex-column" v-for="(template, index) in getMessageTemplate.data" :key="index">
-                  <label class="template--title text-12 text-bold">{{ template.title }}</label>
-                  <label class="template--content mt-3 text-10">{{ template.content }}...</label>
+                <li
+                  class="template mb-4 d-flex flex-column"
+                  v-for="(template, index) in getMessageTemplate.data"
+                  :key="index"
+                >
+                  <label class="template--title text-12 text-bold">{{
+                    template.title
+                  }}</label>
+                  <label class="template--content mt-3 text-10"
+                    >{{ template.content }}...</label
+                  >
                 </li>
               </ul>
             </div>
@@ -97,21 +144,19 @@
           <label class="card--text">Send Quick SMS Here</label>
         </div>
         <div class="compose--sms mt-5">
-          <v-btn class="no-shadow" width="30px" height="30px" fab dark small color="primary">
+          <v-btn
+            class="no-shadow"
+            width="30px"
+            height="30px"
+            fab
+            dark
+            small
+            color="primary"
+          >
             <i class="icon-compose"></i>
           </v-btn>
           <label class="ml-3 text-bold compose--text">Compose</label>
-          <v-form ref="composeSms">
-            <v-text-field class="mt-4" placeholder="Search Contact" background-color="#f2f3fc" hide-details="auto" :required="true" flat append-icon="icon-magnify" solo></v-text-field>
-
-            <v-textarea solo flat class="mt-4" background-color="#f2f3fc" name="input-7-4" hide-details="auto" placeholder="Type your message here" height="345px"></v-textarea>
-            <div class="mt-4 d-flex justify-end">
-              <v-btn color="primary">
-                Send
-                <i class="mdi mdi-send ml-2"></i>
-              </v-btn>
-            </div>
-          </v-form>
+          <quick-sms />
         </div>
       </v-card>
     </v-col>
@@ -123,12 +168,16 @@ import { Vue, Component } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { AuthStateType } from '@/store/modules/auth';
 import { UserStateType } from '@/store/modules/user';
+import QuickSMS from '../../components/dashboard/quick-sms.vue';
 
 const auth = namespace('auth');
 const user = namespace('user');
 
 @Component({
-  name: 'DashboardIndex'
+  name: 'DashboardIndex',
+  components: {
+    'quick-sms': QuickSMS
+  }
 })
 export default class DashboardIndex extends Vue {
   @auth.Getter
@@ -147,11 +196,16 @@ export default class DashboardIndex extends Vue {
   getMessageHistory!: UserStateType['messageTemplate'];
 
   get firstname(): string {
-    return this.getLoggedInUser ? this.getLoggedInUser.displayName.split(' ')[0] : '';
+    return this.getLoggedInUser
+      ? this.getLoggedInUser.displayName.split(' ')[0]
+      : '';
   }
 
   get lastMessage(): string | undefined {
-    return this.getMessageHistory.data.length < 1 ? 'No Message Sent' : this.getMessageHistory.data[this.getMessageHistory.data.length - 1].content;
+    return this.getMessageHistory.data.length < 1
+      ? 'No Message Sent'
+      : this.getMessageHistory.data[this.getMessageHistory.data.length - 1]
+        .content;
   }
 }
 </script>
@@ -227,7 +281,8 @@ export default class DashboardIndex extends Vue {
 }
 
 .colored--box {
-  background: var(--primary) url(../../assets/images/background/card-abstract.svg) !important;
+  background: var(--primary)
+    url(../../assets/images/background/card-abstract.svg) !important;
   height: 46px;
   border-radius: 5px;
   width: 100%;
@@ -284,7 +339,7 @@ export default class DashboardIndex extends Vue {
   /* box-shadow: 0#C0DBCF; */
   left: 10px;
   position: absolute !important;
-  font-family: 'icomoon' !important;
+  font-family: "icomoon" !important;
   padding-top: 5px;
   text-align: center;
   font-size: 10px;
@@ -292,6 +347,13 @@ export default class DashboardIndex extends Vue {
   border-radius: 50%;
   height: 26px !important;
   width: 26px !important;
-  content: '\e905';
+  content: "\e905";
+}
+
+.link {
+  cursor: pointer;
+}
+.link:hover {
+  color: var(--secondary) !important;
 }
 </style>

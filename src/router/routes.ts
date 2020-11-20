@@ -6,6 +6,7 @@ import DashboardIndex from '../views/dashboard/index.vue';
 import Templates from '../views/dashboard/templates.vue';
 import History from '../views/dashboard/history.vue';
 import Contacts from '../views/dashboard/contacts.vue';
+import Account from '../views/dashboard/account.vue';
 import { isAuthenticationRoute, isAuthenticated } from '../middlewares/index';
 
 const routes: Array<RouteConfig> = [
@@ -45,8 +46,12 @@ const routes: Array<RouteConfig> = [
         component: Templates
       },
       {
-        path: 'History',
+        path: 'history',
         component: History
+      },
+      {
+        path: 'account',
+        component: Account
       }
     ]
   }

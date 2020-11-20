@@ -18,4 +18,9 @@ export default Vue.extend({
 <style>
 @import url(assets/styles/global.css);
 @import url(assets/styles/icomoon.css);
+
+.v-text-field--single-line .v-input__slot {
+  background-color: #fff2f2 !important;
+  border-color: #fff2f2 !important;
+}
 </style>
