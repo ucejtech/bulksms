@@ -5,7 +5,7 @@
         <img src="@/assets/images/illustrations/hand-open.svg" alt="" />
         <div class="d-flex justify-space-between pb-3">
           <label class="dashboard--username ml-16 pl-10">
-            Hola
+            Hello
             <span class="colored--text">{{ firstname }}</span
             >,
             <div>Welcome back</div>

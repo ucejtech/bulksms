@@ -175,7 +175,8 @@ export default class UserModule extends VuexModule {
     const { uid } = this.context.getters.getUserProfile;
 
     await contacts.map(async (contact: Contact) => {
-      const contactsRef = await firebase.firestore().collection('contacts').doc(contact.phoneNumber);
+      const contactsRef = await firebase.firestore().collection('contacts').doc(uid).collection('list')
+        .doc(contact.phoneNumber);
       await batch.set(contactsRef, { contactOwner: uid, ...contact });
     });
     return batch.commit();
@@ -183,13 +184,15 @@ export default class UserModule extends VuexModule {
 
   @Action({ rawError: true })
   fetchContacts(uid: string) {
-    firebase.firestore().collection('contacts').where('contactOwner', '==', uid).onSnapshot(querySnapshot => {
-      const contactsResult: UserStateType['contacts']['data'] = [];
-      querySnapshot.forEach(doc => {
-        contactsResult.push(doc.data());
+    firebase.firestore().collection('contacts').doc(uid).collection('list')
+      .where('contactOwner', '==', uid)
+      .onSnapshot(querySnapshot => {
+        const contactsResult: UserStateType['contacts']['data'] = [];
+        querySnapshot.forEach(doc => {
+          contactsResult.push(doc.data());
+        });
+        return this.context.commit('SET_USER_CONTACT', contactsResult);
       });
-      return this.context.commit('SET_USER_CONTACT', contactsResult);
-    });
   }
 
   @Action({ rawError: true })

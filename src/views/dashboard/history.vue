@@ -54,7 +54,7 @@
                 <div class="ml-3">
                   <span class="text-bold"> {{ message.title }}</span>
                   <div>{{ message.content.slice(0, 200) }}</div>
-                  <span class="text-12 text-primary">Sent to {{ message.recipients.length }} Contact(s)</span>
+                  <span class="text-12 text-primary">Sent to {{ message.recipients.length }} Contact(s) at Cost <h4>NGN {{ message.recipients.length * price }}</h4></span>
                   <div class="ml-2 dot" />
                   <div class="ml-2 text-12 d-inline">{{readDate(message.date)}}</div>
                 </div>
@@ -78,6 +78,8 @@ import Dates from '@/utils/dates';
 
 import { UserStateType } from '@/store/modules/user';
 import ChipsGroup from '../../components/dashboard/chips-groups.vue';
+
+// const pricePerSMS = 5;
 
 interface Model {
   contactImport: {
@@ -107,6 +109,8 @@ const user = namespace('user');
   }
 })
 export default class History extends Vue {
+  price = 5;
+
   model: Model = {
     contactImport: {
       group: {

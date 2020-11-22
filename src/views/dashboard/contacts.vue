@@ -14,7 +14,7 @@
         <div class="contact--display--groups mt-6 pa-4">
           <div class="selections d-flex justify-space-between align-center">
             <v-checkbox
-              v-model="checkbox.messageRecipient"
+              v-model="checkbox.displayedContacts"
               value="all"
               label="All"
               hide-details
@@ -28,7 +28,7 @@
             :key="index"
           >
             <v-checkbox
-              v-model="checkbox.messageRecipient"
+              v-model="checkbox.displayedContacts"
               :label="group.name"
               :value="group.id"
               hide-details
@@ -63,65 +63,67 @@
           class="colored--accent--box contact--list d-flex align-center pl-3 mb-4"
         >
           <v-checkbox
-            v-model="checkbox.all"
-            :value="checkbox.messageRecipient === 'all'"
+            v-model="checkbox.messageRecipient"
+            :value="model.sendMessage.recipients == contactList.data"
             label="#"
             hide-details
             required
           ></v-checkbox>
           <span class="ml-7">Phone Numbers</span>
         </div>
-
-        <div
-          class="d-flex align-center full-width full-height justify-center"
-          v-if="getContacts.data.length < 1"
-        >
-          <div class="text-center mb-4">
-            <img
-              class="mb-4"
-              src="@/assets/images/illustrations/contacts_search.svg"
-              alt="no contact image"
-              width="300px"
-            /><br />No Contact Available
-          </div>
-        </div>
-        <div
-          class="mt-2 contact--display--list d-flex align-center pl-3"
-          v-for="(contact, index) in getContacts.data"
-          :key="index"
-          v-else
-        >
-          <v-checkbox
-            v-model="model.sendMessage.recipients"
-            :label="`${index + 1}`"
-            :value="contact"
-            hide-details
-            required
-          ></v-checkbox>
-          <span
-            class="ml-3 d-flex justify-space-between align-center full-width pa-2"
+        <div v-if="contactList.loading">Fetching...</div>
+        <div v-else>
+          <div
+            class="d-flex align-center full-width full-height justify-center"
+            v-if="contactList.data.length < 1"
           >
-            <div class="text-13 d-flex align-center justify-space-between">
-              <v-btn
-                class="mx-2 no-shadow"
-                width="30px"
-                height="30px"
-                fab
-                dark
-                small
-                color="rgba(228, 88, 88, 0.2)"
-              >
-                <v-icon color="#000" size="15">mdi-account-outline</v-icon>
-              </v-btn>
-              <div>
-                <span> {{ contact.name }}</span>
-                <span class="ml-4">{{ contact.phoneNumber }}</span>
+            <div class="text-center mb-4">
+              <img
+                class="mb-4"
+                src="@/assets/images/illustrations/contacts_search.svg"
+                alt="no contact image"
+                width="300px"
+              /><br />No Contact Available
+            </div>
+          </div>
+          <div
+            class="mt-2 contact--display--list d-flex align-center pl-3"
+            v-for="(contact, index) in contactList.data"
+            :key="index"
+            v-else
+          >
+            <v-checkbox
+              v-model="model.sendMessage.recipients"
+              :label="`${index + 1}`"
+              :value="contact"
+              hide-details
+              required
+            ></v-checkbox>
+            <span
+              class="ml-3 d-flex justify-space-between align-center full-width pa-2"
+            >
+              <div class="text-13 d-flex align-center justify-space-between">
+                <v-btn
+                  class="mx-2 no-shadow"
+                  width="30px"
+                  height="30px"
+                  fab
+                  dark
+                  small
+                  color="rgba(228, 88, 88, 0.2)"
+                >
+                  <v-icon color="#000" size="15">mdi-account-outline</v-icon>
+                </v-btn>
+                <div>
+                  <span> {{ contact.name }}</span>
+                  <span class="ml-4">{{ contact.phoneNumber }}</span>
+                </div>
               </div>
-            </div>
-            <div class="delete">
-              <i class="icon-bin"></i>
-            </div>
-          </span>
+              <div class="delete">
+                <i class="icon-bin"></i>
+              </div>
+            </span>
+          </div>
         </div>
       </v-col>
       <v-col cols="12" md="2">
@@ -181,9 +183,9 @@
           @change="handleFilechanged"
           accept=".json"
         />
-         <div>
-            <a href="/sample.json" download="sample">Download a sample</a>
-         </div>
+        <div>
+          <a href="/sample.json" download="sample">Download a sample</a>
+        </div>
         <v-btn
           class="mt-6"
           color="primary"
@@ -325,7 +327,8 @@ export default class Contacts extends Vue {
   };
 
   checkbox = {
-    messageRecipient: ''
+    messageRecipient: '',
+    displayedContacts: ''
   };
 
   addContactLoading = false;
@@ -347,16 +350,37 @@ export default class Contacts extends Vue {
   @user.Getter
   getContactGroups!: UserStateType['contactGroups'];
 
+  contactList: UserStateType['contacts'] = {
+    loading: true,
+    data: []
+  };
+
+  mounted() {
+    this.contactList = this.getContacts;
+  }
+
   @Watch('checkbox', { deep: true })
-  async onMessageRecipientCheckBox(val: { messageRecipient: string }) {
-    if (val.messageRecipient) {
-      if (val.messageRecipient === 'all') {
-        this.model.sendMessage.recipients = this.getContacts.data;
-      } else {
-        this.model.sendMessage.recipients = await this.getGroupContacts(val.messageRecipient);
-      }
+  async onMessageRecipientCheckBox(val: { messageRecipient: string; displayedContacts: string }, oldValue: { messageRecipient: string; displayedContacts: string }) {
+    console.log('oldValue:', oldValue.displayedContacts, 'newValue:', val.displayedContacts);
+    if (val.displayedContacts === 'all' || !val.displayedContacts) {
+      this.contactList = this.getContacts;
+      this.contactList.loading = false;
     } else {
-      this.model.sendMessage.recipients = [];
+      this.contactList.loading = true;
+      this.contactList = {
+        loading: false,
+        data: await this.getGroupContacts(val.displayedContacts)
+      };
+    }
+  }
+
+  @Watch('getContacts', { deep: true })
+  async onContactsChanged(contacts: UserStateType['contacts']) {
+    if (
+      this.checkbox.displayedContacts === ''
+      || this.checkbox.displayedContacts === 'all'
+    ) {
+      this.contactList = contacts;
     }
   }
 
@@ -369,9 +393,7 @@ export default class Contacts extends Vue {
 
   // eslint-disable-next-line class-methods-use-this
   async getGroupContacts(id: string): Promise<Contact[]> {
-    return FirebaseHelper.getGroupContacts(
-      id
-    );
+    return FirebaseHelper.getGroupContacts(id);
   }
 
   handleFilechanged(e: Event & { target: { files: FileList } }) {
@@ -426,9 +448,20 @@ export default class Contacts extends Vue {
   }
 
   sendMessage() {
-    if ((this.$refs.sendMessageForm as Vue & { validate: () => boolean }).validate()) {
-      if (!this.model.sendMessage.message.title && this.model.sendMessage.saveAsTemplate) {
-        this.$toast.error('Message Title needed for templates', 'Error', 'topRight');
+    if (
+      (this.$refs.sendMessageForm as Vue & {
+        validate: () => boolean;
+      }).validate()
+    ) {
+      if (
+        !this.model.sendMessage.message.title
+        && this.model.sendMessage.saveAsTemplate
+      ) {
+        this.$toast.error(
+          'Message Title needed for templates',
+          'Error',
+          'topRight'
+        );
         return;
       }
       if (this.model.sendMessage.recipients.length < 1) {

@@ -2,6 +2,7 @@
   <v-app>
     <sidebar />
     <v-main class="mx-md-16 my-md-6 ma-5">
+
       <header class="d-flex justify-space-between">
         <label class="page--name">{{ pageTitle }}</label>
         <v-btn class="mx-2 no-shadow" width="30px" @click="logout" height="30px" fab dark small color="rgba(228, 88, 88, 0.2)"> <i class="icon-power"></i></v-btn>

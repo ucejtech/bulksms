@@ -4,7 +4,7 @@ import * as admin from 'firebase-admin'
 import * as twilio from 'twilio'
 import { v4 } from 'uuid';
 
-const client = twilio(functions.config().twilio.test.account_sid, functions.config().twilio.test.auth_token);
+const client = twilio(functions.config().twilio.live.account_sid, functions.config().twilio.live.auth_token);
 
 admin.initializeApp({
     credential: admin.credential.applicationDefault(),
@@ -45,7 +45,7 @@ exports.sendSMS = functions.https.onCall(async (data, context) => {
         recipients.forEach((recipient: { phoneNumber: string }) => {
             client.messages.create({
                 to: recipient.phoneNumber,
-                from: '+12514517566',
+                from: functions.config().twilio.live.phone,
                 body: message.content
             })
                 .then(() => {
