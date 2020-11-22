@@ -45,7 +45,7 @@ exports.sendSMS = functions.https.onCall(async (data, context) => {
         recipients.forEach((recipient: { phoneNumber: string }) => {
             client.messages.create({
                 to: recipient.phoneNumber,
-                from: functions.config().twilio.live.phone,
+                messagingServiceSid: functions.config().twilio.live.messaging_service_id,
                 body: message.content
             })
                 .then(() => {
