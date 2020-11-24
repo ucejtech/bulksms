@@ -16,4 +16,5 @@ export interface ToastObject {
 export interface ConstantsObject {
     appTitle: string;
     authError: Record<string, string>;
+    pricePerSMS: string;
 }

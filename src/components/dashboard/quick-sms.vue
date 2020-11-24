@@ -1,5 +1,10 @@
 <template>
   <v-form ref="composeSms">
+    <chips-group
+      class="mt-5"
+      v-if="model.sendMessage.recipientType === 'number' && model.sendMessage.recipients.length > 0"
+      :chipData="model.sendMessage.recipients.map((x) => x.phoneNumber)"
+    ></chips-group>
     <v-radio-group
       v-model="model.sendMessage.recipientType"
       @change="clearRecipients"
@@ -25,6 +30,7 @@
       hide-details="auto"
       :required="true"
       flat
+      v-if="model.sendMessage.recipientType !== 'number'"
       append-icon="icon-magnify"
       :rules="rules.recipients"
       return-object
@@ -35,6 +41,19 @@
       <template slot="item" slot-scope="{ item }">
         <p v-html="`${item.name}`"></p> </template
     ></v-autocomplete>
+    <v-text-field
+      class="mt-5"
+      background-color="#f2f3fc"
+      placeholder="Comma separated number e.g +2349099xxx, +2345783xxx"
+      :required="true"
+      v-model="model.displayName"
+      :rules="rules.displayName"
+      flat
+      hide-details="auto"
+      solo
+      v-else
+    ></v-text-field>
+
     <v-textarea
       solo
       flat
@@ -49,7 +68,7 @@
       no-resize
     ></v-textarea>
     <div class="mt-4 d-flex justify-end">
-      <v-btn color="primary" @click="sendMessage">
+      <v-btn color="primary" @click="sendMessage" :loading="sendMessageLoading">
         Send
         <i class="mdi mdi-send ml-2"></i>
       </v-btn>
@@ -64,11 +83,15 @@ import {
   Vue, Component, Prop, Watch
 } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
+import ChipsGroup from './chips-groups.vue';
 
 const user = namespace('user');
 
 @Component({
-  name: 'QuickSMS'
+  name: 'QuickSMS',
+  components: {
+    ChipsGroup
+  }
 })
 export default class QuickSMS extends Vue {
   @Prop({ default: '' })
@@ -103,9 +126,11 @@ export default class QuickSMS extends Vue {
   };
 
   rules = {
-    recipients: [(v: groupType[] | Contact[]) => v.length > 0 || 'Recipients must be selected'],
+    recipients: [
+      (v: groupType[] | Contact[]) => v.length > 0 || 'Recipients must be selected'
+    ],
     content: [(v: string) => !!v || 'Message Content is needed']
-  }
+  };
 
   get getSearchItem() {
     if (this.model.sendMessage.recipientType === 'group') {
@@ -119,13 +144,13 @@ export default class QuickSMS extends Vue {
   }
 
   async sendMessage() {
-    if ((this.$refs.composeSms as Vue & { validate: () => boolean }).validate()) {
+    if (
+      (this.$refs.composeSms as Vue & { validate: () => boolean }).validate()
+    ) {
       if (this.model.sendMessage.recipientType === 'group') {
         let recipients: Contact[] = [];
         this.model.sendMessage.recipients.map(async x => {
-          const contacts = await FirebaseHelper.getGroupContacts(
-            x.id
-          );
+          const contacts = await FirebaseHelper.getGroupContacts(x.id);
           recipients = [...contacts];
         });
         this.sendMessageLoading = true;

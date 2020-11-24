@@ -1,31 +1,38 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin'
-// import Axios from "axios"
-import * as twilio from 'twilio'
+import Axios, { AxiosResponse } from "axios"
+// import * as twilio from 'twilio'
 import { v4 } from 'uuid';
 
-const client = twilio(functions.config().twilio.live.account_sid, functions.config().twilio.live.auth_token);
+// const client = twilio(functions.config().twilio.live.account_sid, functions.config().twilio.live.auth_token);
 
 admin.initializeApp({
     credential: admin.credential.applicationDefault(),
     databaseURL: 'https://spaas-8500c.firebaseio.com'
 })
 
-// const makeRequest = (token = "", prefix?: string, length?: number) => {
-//     return Axios.create({
-//         timeout: 50000,
-//         headers: {
-//             Authorization: `${prefix ? prefix : 'Bearer'} ${token}`,
-//         },
-//     });
-// };
-// const messageRequest = await makeRequest(
-//     functions.config().bulksms.api_auth, 'Basic', messageObj.length
-// ).post(`${functions.config().bulksms.base_url}/messages`, messageObj);
+const makeRequest = (token = "", prefix?: string, length?: number) => {
+    return Axios.create({
+        timeout: 50000,
+        headers: {
+            Authorization: `${prefix ? prefix : 'Bearer'} ${token}`
+        }
+    });
+};
 
 async function addMessageTemplate(message: { title: string, content: string }, userId: string, date: string) {
     const id = v4()
     await admin.firestore().collection('templates').doc(id).set({ ...message, id, templateOwner: userId, date })
+}
+
+async function sendBulkSMS(to: string, body: string): Promise<Boolean> {
+    const messageRequest: AxiosResponse = await makeRequest().post(`${functions.config().bulksms_nigeria.base_url}/sms/create?api_token=${functions.config().bulksms_nigeria.api_token}&from=VoyaService&to=${to}&body=${body}&dnd=${4}`);
+    const { error } = messageRequest.data
+    if (error) {
+        return false
+    } else {
+        return true
+    }
 }
 
 exports.sendSMS = functions.https.onCall(async (data, context) => {
@@ -41,20 +48,25 @@ exports.sendSMS = functions.https.onCall(async (data, context) => {
                     "recipients, message title and message content must be provided."
             };
         }
-
-        recipients.forEach((recipient: { phoneNumber: string }) => {
-            client.messages.create({
-                to: recipient.phoneNumber,
-                messagingServiceSid: functions.config().twilio.live.messaging_service_id,
-                body: message.content
-            })
-                .then(() => {
-                    return true;
-                })
-                .catch((err) => {
-                    console.log(err);
-                    return false;
-                })
+        const receivers: string[] = []
+        recipients.forEach(async (recipient: { phoneNumber: string }, index: number) => {
+            receivers.push(recipient.phoneNumber)
+            if (index === recipients.length - 1) {
+                await sendBulkSMS(receivers.join(','), message.content)
+            }
+            // client.messages.create({
+            //     to: recipient.phoneNumber,
+            //     from: functions.config().twilio.live.phone,
+            //     messagingServiceSid: functions.config().twilio.live.messaging_service_id,
+            //     body: message.content
+            // })
+            //     .then(() => {
+            //         return true;
+            //     })
+            //     .catch((err) => {
+            //         console.log(err);
+            //         return false;
+            //     })
         });
 
         if (saveAsTemplate) {

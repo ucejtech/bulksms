@@ -19,6 +19,7 @@ export interface Message {
   title?: string;
   content?: string;
   recipients?: string;
+  value?: number;
 }
 
 export interface UserStateType {

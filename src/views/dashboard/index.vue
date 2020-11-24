@@ -57,12 +57,27 @@
               >
             </div>
             <div class="text-10">{{ lastMessage }}...</div>
-            <div class="mt-2 d-flex align-center">
-              <i class="text-primary text-11 icon-history"></i>
-              <label class="text-primary text-13 ml-3"
-                >History
-                <span class="text-black text-8">10th October, 2020</span></label
-              >
+            <div class="mt-2 d-flex align-center justify-space-between">
+              <div>
+                <i class="text-primary text-11 icon-history"></i>
+                <label class="text-primary text-13 ml-3"
+                  >History
+                  <span class="text-black text-8"
+                    >10th October, 2020</span
+                  ></label
+                >
+              </div>
+              <label class="text-primary text-13 ml-3 total--sms">
+                Total SMS Sent:
+                <strong>
+                  {{ getMessageHistory.data.length }}
+                </strong>
+                <br />
+                Total SMS Amount:
+                <strong>
+                  {{ getTotalSMSAmount }}
+                </strong>
+              </label>
             </div>
           </v-card>
 
@@ -169,6 +184,7 @@ import { namespace } from 'vuex-class';
 import { AuthStateType } from '@/store/modules/auth';
 import { UserStateType } from '@/store/modules/user';
 import QuickSMS from '../../components/dashboard/quick-sms.vue';
+import Formatter from '../../utils/formatter';
 
 const auth = namespace('auth');
 const user = namespace('user');
@@ -206,6 +222,19 @@ export default class DashboardIndex extends Vue {
       ? 'No Message Sent'
       : this.getMessageHistory.data[this.getMessageHistory.data.length - 1]
         .content;
+  }
+
+  get getTotalSMSAmount(): string {
+    let total = 0;
+    if (this.getMessageHistory.data.length > 0) {
+      this.getMessageHistory.data.map(message => {
+        total
+          += Number(message.recipients?.length)
+          * Number(this.$constants.pricePerSMS);
+        return true;
+      });
+    }
+    return Formatter.currency(`${total * 100}`);
   }
 }
 </script>
@@ -355,5 +384,8 @@ export default class DashboardIndex extends Vue {
 }
 .link:hover {
   color: var(--secondary) !important;
+}
+.total--sms {
+  direction: rtl;
 }
 </style>
