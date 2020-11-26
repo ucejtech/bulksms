@@ -46,14 +46,14 @@
       background-color="#f2f3fc"
       placeholder="Comma separated number e.g +2349099xxx, +2345783xxx"
       :required="true"
-      v-model="model.displayName"
+      @input="formatRecipients"
+      v-model="model.sendMessage.preRecipients"
       :rules="rules.displayName"
       flat
       hide-details="auto"
       solo
       v-else
     ></v-text-field>
-
     <v-textarea
       solo
       flat
@@ -117,6 +117,7 @@ export default class QuickSMS extends Vue {
 
   model = {
     sendMessage: {
+      preRecipients: '',
       recipientType: 'contact',
       recipients: this.presetRecipient,
       message: {
@@ -176,6 +177,11 @@ export default class QuickSMS extends Vue {
           });
       }
     }
+  }
+
+  formatRecipients(v: string) {
+    console.log(v, this.model.sendMessage.preRecipients);
+    this.model.sendMessage.recipients = v.split(',').map(x => ({ phoneNumber: x, id: '' }));
   }
 
   @user.Action

@@ -4,8 +4,9 @@ import {
 } from 'vuex-module-decorators';
 
 export type groupType = {
-  name: string;
-  contacts: string[];
+  phoneNumber?: string;
+  name?: string;
+  contacts?: string[];
   id: string;
 }
 
